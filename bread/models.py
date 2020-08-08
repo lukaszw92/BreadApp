@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Bread(models.Model):
@@ -24,7 +25,13 @@ class Bread(models.Model):
 
 
 class Grain(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_delete_url(self):
+        return reverse('remove_grain', args=(self.pk,))
 
 
 class Flour(models.Model):
