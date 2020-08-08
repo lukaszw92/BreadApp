@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+{% block content %}
+<h2>Add your flour</h2>
+
+<form method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Add flour to database">
+    </form>
+
+{% include 'show_flours.html' %}
+
+{% endblock content %}

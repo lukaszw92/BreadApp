@@ -1,0 +1,23 @@
+
+
+<h2>Flours in database</h2>
+
+<table style="width:50%">
+
+<thead>
+  <tr>
+    <th>name</th> <th>brand</th> <th>grain</th> <th>wholegrain</th> <th>type</th>
+  </tr>
+</thead>
+<tbody>
+
+    {% for flour in object_list %}
+
+        <tr> <td> {{ flour.name }} </td> <td>  {{ flour.brand }} </td> <td>  {{ flour.grain }} </td> <td> {{ flour.wholegrain }}</td> <td> {{ flour.type }} </td> </tr>
+
+    {% empty %}
+    No flours added yet
+    {% endfor %}
+
+</tbody>
+</table>

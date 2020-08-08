@@ -42,6 +42,7 @@ class Flour(models.Model):
     type = models.IntegerField(null=True)
 
 
+
 class Starter(models.Model):
     name = models.CharField(max_length=100)
     sourdough = models.IntegerField()
