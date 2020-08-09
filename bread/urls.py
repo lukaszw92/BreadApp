@@ -9,5 +9,6 @@ urlpatterns = [
 
     path("flour/add_flour/", views.AddFlourView.as_view(), name='add_flour'),
     path("flour/show_flours/", views.AddFlourView.as_view(), name='add_flour'),
+    path("flour/remove_flour/<int:pk>", views.RemoveFlourView.as_view(), name='remove_flour'),
 
 ]

@@ -1,8 +1,9 @@
 
 <form method="post">
     {% csrf_token %}
-    <p>Are you sure you want to remove grain "{{ object }}"?</p>
+    <p>Are you sure you want to remove this grain - {{ object }} ?</p>>
+    <p>By doing so you will also delete all flours that contain this grain.</p>
     <input type="submit" value="Remove">
 </form>
-<a href="{% url 'add_grain' %}">No, back to grain list</a>
+<a href="{% url 'add_grain' %}">No, back to grain list!</a>
 

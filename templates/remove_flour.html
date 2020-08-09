@@ -1,0 +1,9 @@
+
+<form method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to remove this flour?</p>
+        <p>{{ object.name }} | {{ object.brand }}</p>
+    <p>By doing so you will also delete all breads that contain this flour.</p>
+    <input type="submit" value="Remove">
+</form>
+<a href="{% url 'add_flour' %}">No, back to flour list!</a>

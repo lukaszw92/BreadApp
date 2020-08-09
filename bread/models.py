@@ -41,6 +41,8 @@ class Flour(models.Model):
     wholegrain = models.BooleanField(default=False)
     type = models.IntegerField(null=True)
 
+    def get_delete_url(self):
+        return reverse('remove_flour', args=(self.pk,))
 
 
 class Starter(models.Model):

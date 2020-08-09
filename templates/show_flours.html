@@ -13,7 +13,11 @@
 
     {% for flour in object_list %}
 
-        <tr> <td> {{ flour.name }} </td> <td>  {{ flour.brand }} </td> <td>  {{ flour.grain }} </td> <td> {{ flour.wholegrain }}</td> <td> {{ flour.type }} </td> </tr>
+        <tr> <td> {{ flour.name }} </td> <td>  {{ flour.brand }} </td> <td>  {{ flour.grain }} </td>
+
+            <td> {{ flour.wholegrain }}</td> <td> {{ flour.type }} </td>
+
+            <td> <a href="{{ flour.get_delete_url}}">remove</a></td> </tr>
 
     {% empty %}
     No flours added yet

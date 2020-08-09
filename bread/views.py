@@ -46,3 +46,8 @@ class ShowFloursView(ListView):
     model = Flour
     template_name = 'show_flours.html'
     queryset = Flour.objects.all()
+
+class RemoveFlourView(DeleteView):
+    model = Flour
+    template_name = 'remove_flour.html'
+    success_url = reverse_lazy('add_flour')
