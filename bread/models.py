@@ -44,6 +44,9 @@ class Flour(models.Model):
     def get_delete_url(self):
         return reverse('remove_flour', args=(self.pk,))
 
+    def get_edit_url(self):
+        return reverse('edit_flour', args=(self.pk,))
+
 
 class Starter(models.Model):
     name = models.CharField(max_length=100)

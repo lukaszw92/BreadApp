@@ -17,12 +17,10 @@ class AddGrainView(CreateView):
         context.update({'object_list': Grain.objects.all()})
         return context
 
-
 class ShowGrainsView(ListView):
     model = Grain
     template_name = 'grain/show_grains.html'
     queryset = Grain.objects.all()
-
 
 class RemoveGrainView(DeleteView):
     model = Grain
@@ -47,7 +45,15 @@ class ShowFloursView(ListView):
     template_name = 'show_flours.html'
     queryset = Flour.objects.all()
 
+
 class RemoveFlourView(DeleteView):
     model = Flour
     template_name = 'remove_flour.html'
+    success_url = reverse_lazy('add_flour')
+    
+
+class EditFlourView(UpdateView):
+    model = Flour
+    fields = '__all__'
+    template_name = 'edit_flour.html'
     success_url = reverse_lazy('add_flour')

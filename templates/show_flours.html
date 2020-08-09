@@ -17,7 +17,10 @@
 
             <td> {{ flour.wholegrain }}</td> <td> {{ flour.type }} </td>
 
-            <td> <a href="{{ flour.get_delete_url}}">remove</a></td> </tr>
+            <td> <a href="{{ flour.get_delete_url}}">remove</a></td>
+
+        <td> <a href="{{ flour.get_edit_url}}">edit</a></td> </tr>
+
 
     {% empty %}
     No flours added yet

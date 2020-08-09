@@ -1,0 +1,8 @@
+<p>You are editing {{ flour.name }}</p>
+
+<form action="" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Save changes"></form>
+
+<a href="{% url 'add_flour' %}">Don't save changes</a>
