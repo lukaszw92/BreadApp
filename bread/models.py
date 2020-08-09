@@ -37,7 +37,7 @@ class Grain(models.Model):
 class Flour(models.Model):
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100, null=True)
-    grain = models.ForeignKey(Grain, on_delete=models.CASCADE)
+    grain = models.ForeignKey(Grain, on_delete=models.SET_NULL, null=True)
     wholegrain = models.BooleanField(default=False)
     type = models.IntegerField(null=True)
 
