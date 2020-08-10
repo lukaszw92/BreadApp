@@ -47,6 +47,8 @@ class Flour(models.Model):
     def get_edit_url(self):
         return reverse('edit_flour', args=(self.pk,))
 
+    def __str__(self):
+        return f'{self.name} | {self.brand}'
 
 class Starter(models.Model):
     name = models.CharField(max_length=100)
@@ -54,6 +56,14 @@ class Starter(models.Model):
     water = models.IntegerField()
     flour = models.ManyToManyField('Flour', through='FlourInStarter')
     proofing = models.TimeField(null=True)
+
+
+    def get_delete_url(self):
+        return reverse('remove_starter', args=(self.pk,))
+
+    def get_edit_url(self):
+        return reverse('edit_starter', args=(self.pk,))
+
 
 #   def get_starter_weight(self):
 
@@ -66,7 +76,7 @@ class FlourInBread(models.Model):
 
 class FlourInStarter(models.Model):
     flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
-    starter = models.ForeignKey(Starter, on_delete=models.CASCADE)
+    starter = models.ForeignKey(Starter, on_delete=models.CASCADE, null=True)
     grams = models.IntegerField()
 
 

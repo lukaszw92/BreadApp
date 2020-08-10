@@ -1,17 +1,23 @@
 <h2>Available grains</h2>
 
 
-<ul>
+<table style="width:25%">
+
+<thead>
+  <tr>
+    <th>Name</th><th></th>
+  </tr>
+</thead>
 
     {% for grain in object_list %}
 
-        <li>{{ grain }} <a href="{{grain.get_delete_url}}">remove</a></li>
+        <tr><td>{{ grain }}</td><td><a href="{{grain.get_delete_url}}">remove</a></td></tr>
 
     {% empty %}
     No grains added yet
     {% endfor %}
 
-</ul>
+</table>
 
 
 
