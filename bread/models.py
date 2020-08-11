@@ -4,14 +4,14 @@ from django.urls import reverse
 
 class Bread(models.Model):
     name = models.CharField(max_length=100)
-    date = models.DateField()  # set default to today
+    date = models.DateField()
 
     water = models.IntegerField()
     salt = models.IntegerField()
     flour_mix = models.ManyToManyField('Flour', through='FlourInBread')
-    starter = models.ForeignKey('Starter', on_delete=models.CASCADE)  # consider 1t1 relationship
+    leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE)
 
-    first_proofing = models.TimeField(null=True)  # is it OK to use time fields like this?
+    first_proofing = models.TimeField(null=True)
     second_proofing = models.TimeField(null=True)
     baking_time = models.TimeField()
 
@@ -50,22 +50,24 @@ class Flour(models.Model):
     def __str__(self):
         return f'{self.name} | {self.brand}'
 
-class Starter(models.Model):
+class Leaven(models.Model):
     name = models.CharField(max_length=100)
     sourdough = models.IntegerField()
     water = models.IntegerField()
-    flour = models.ManyToManyField('Flour', through='FlourInStarter')
+    flour = models.ManyToManyField('Flour', through='FlourInLeaven')
     proofing = models.TimeField(null=True)
 
 
     def get_delete_url(self):
-        return reverse('remove_starter', args=(self.pk,))
+        return reverse('remove_leaven', args=(self.pk,))
 
     def get_edit_url(self):
-        return reverse('edit_starter', args=(self.pk,))
+        return reverse('edit_leaven', args=(self.pk,))
 
 
-#   def get_starter_weight(self):
+
+
+#   def get_leaven_weight(self):
 
 
 class FlourInBread(models.Model):
@@ -74,9 +76,9 @@ class FlourInBread(models.Model):
     grams = models.IntegerField()
 
 
-class FlourInStarter(models.Model):
+class FlourInLeaven(models.Model):
     flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
-    starter = models.ForeignKey(Starter, on_delete=models.CASCADE, null=True)
+    leaven = models.ForeignKey(Leaven, on_delete=models.CASCADE)
     grams = models.IntegerField()
 
 

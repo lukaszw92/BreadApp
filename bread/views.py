@@ -4,49 +4,39 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
-from bread.models import Grain, Flour, Starter, FlourInStarter, Bread, FlourInBread
+from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
 
 
 """
-Starter related views
+Leaven related views
 """
 
-# class FlourInStarterView(CreateView):
-#     model = FlourInStarter
+# class FlourInLeavenView(CreateView):
+#     model = FlourInLeaven
 #     fields = ['']
-#     success_url = reverse_lazy('add_starter')
-#     template_name = 'starter/flour_in_starter.html'
-
-
-class AddStarterView(CreateView):
-    model = Starter
-    fields = '__all__'
-    success_url = reverse_lazy('show_starters')
-    template_name = 'starter/add_starter.html'
-    widgets = {
-        'name': forms.CheckboxSelectMultiple()
-    }
-
-
-class ShowStartersView(ListView):
-    model = Starter
-    template_name = 'starter/show_starters.html'
-    queryset = Starter.objects.all()
-
-class RemoveStarterView(DeleteView):
-    model = Starter
-    template_name = 'starter/remove_starter.html'
-    success_url = reverse_lazy('add_starter')
-
-
-class EditStarterView(UpdateView):
-    model = Flour
-    fields = '__all__'
-    template_name = 'starter/edit_starter.html'
-    success_url = reverse_lazy('add_starter')
+#     success_url = reverse_lazy('add_leaven')
+#     template_name = 'leaven/flour_in_leaven.html'
 
 
 
+
+class AddLeavenView(View):
+
+    def get(self, request):
+        leaven = Leaven.objects.all()
+        flours = Flour.objects.all()
+        ctx = {'leaven': leaven, 'flours': flours}
+        return render(request, 'leaven/add_leaven.html', ctx)
+
+    def post(self, request):
+        name = request.POST.get['name']
+
+
+
+class ShowLeavensView(ListView):
+    model = Leaven
+    template_name = 'leaven/show_leaven.html'
+    queryset = Leaven.objects.all()
 
 
 

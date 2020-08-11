@@ -1,0 +1,10 @@
+<h2>Leavens in database</h2>
+
+    {% for leaven in object_list %}
+        {{ leaven.name }}
+
+
+    {% empty %}
+    No leavens added yet
+    {% endfor %}
+

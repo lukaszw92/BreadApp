@@ -15,6 +15,8 @@
 <body>
 <h1>Bread App</h1>
 
+<div class="navigation">
+
 <h2>Menu</h2>
 Register
 Login/Logout
@@ -23,12 +25,15 @@ Login/Logout
 View all breads
 Create your bread
 
-    <a href="{% url 'show_starters' %}">View starters</a>
-    <a href="{% url 'add_starter' %}">Create a starter</a>
+    <a href="{% url 'show_leavens' %}">View leavens</a>
+    <a href="{% url 'add_leaven' %}">Create a leaven</a>
     <a href="{% url 'add_flour' %}">View and add flours</a>
     <a href="{% url 'add_grain' %}">View and add grains</a>
 
 <p>
+
+</div>
+
 {% block content %}
 
 
