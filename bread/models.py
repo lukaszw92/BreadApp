@@ -11,9 +11,9 @@ class Bread(models.Model):
     flour_mix = models.ManyToManyField('Flour', through='FlourInBread')
     leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE)
 
-    first_proofing = models.TimeField(null=True)
-    second_proofing = models.TimeField(null=True)
-    baking_time = models.TimeField()
+    first_proofing = models.DurationField(null=True)
+    second_proofing = models.DurationField(null=True)
+    baking_time = models.DurationField()
 
     rating = models.IntegerField()  # change to choice field
     notes = models.TextField(null=True)
@@ -54,9 +54,10 @@ class Leaven(models.Model):
     name = models.CharField(max_length=100)
     sourdough = models.IntegerField()
     water = models.IntegerField()
-    flour = models.ManyToManyField('Flour', through='FlourInLeaven')
-    proofing = models.TimeField(null=True)
+    flour = models.ManyToManyField(Flour, through='FlourInLeaven')
+    proofing = models.DurationField(null=True)
 
+    #flour in leaven set
 
     def get_delete_url(self):
         return reverse('remove_leaven', args=(self.pk,))
@@ -64,7 +65,19 @@ class Leaven(models.Model):
     def get_edit_url(self):
         return reverse('edit_leaven', args=(self.pk,))
 
+    def get_flour_list(self):
+        return self.flourinleaven_set.all()
 
+    def get_add_flour_url(self):
+        return reverse('flour_in_leaven', args=(self.pk,))
+
+class FlourInLeaven(models.Model):
+    flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
+    leaven = models.ForeignKey(Leaven, on_delete=models.CASCADE)
+    grams = models.IntegerField(null=True)
+
+    def __str__(self):
+        return f'{self.flour} | {self.grams} grams'
 
 
 #   def get_leaven_weight(self):
@@ -76,10 +89,7 @@ class FlourInBread(models.Model):
     grams = models.IntegerField()
 
 
-class FlourInLeaven(models.Model):
-    flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
-    leaven = models.ForeignKey(Leaven, on_delete=models.CASCADE)
-    grams = models.IntegerField()
+
 
 
 

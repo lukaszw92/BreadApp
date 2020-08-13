@@ -5,31 +5,44 @@ from django.views import View
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
+from bread.forms import LeavenForm, FlourInLeavenForm
 
 
 """
 Leaven related views
 """
 
-# class FlourInLeavenView(CreateView):
-#     model = FlourInLeaven
-#     fields = ['']
-#     success_url = reverse_lazy('add_leaven')
-#     template_name = 'leaven/flour_in_leaven.html'
 
+class FlourInLeavenView(View):
 
+    def get(self, request, pk):
+        leaven = Leaven.objects.get(pk=pk)
+        form = FlourInLeavenForm()
+        return render(request, "leaven/flour_in_leaven.html", {'form': form})
+
+    def post(self, request, pk):
+        leaven = Leaven.objects.get(pk=pk)
+        form = FlourInLeavenForm(request.POST)
+
+        if form.is_valid():
+            form.instance
+            leaven.flourinleaven_set.add
+            return redirect(reverse("show_leavens"))
+        return render(request, 'leaven/flour_in_leaven.html', {'form': form})
 
 
 class AddLeavenView(View):
 
     def get(self, request):
-        leaven = Leaven.objects.all()
-        flours = Flour.objects.all()
-        ctx = {'leaven': leaven, 'flours': flours}
-        return render(request, 'leaven/add_leaven.html', ctx)
+        form = LeavenForm()
+        return render(request, "leaven/l.html", {'form': form})
 
     def post(self, request):
-        name = request.POST.get['name']
+        form = LeavenForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("show_leavens"))
+        return render(request, 'leaven/l.html', {'form': form})
 
 
 
@@ -38,6 +51,11 @@ class ShowLeavensView(ListView):
     template_name = 'leaven/show_leaven.html'
     queryset = Leaven.objects.all()
 
+
+class RemoveLeavenView(DeleteView):
+    model = Leaven
+    template_name = 'leaven/remove_leaven.html'
+    success_url = reverse_lazy('show_leavens')
 
 
 """

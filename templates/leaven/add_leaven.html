@@ -5,7 +5,6 @@
 {% block content %}
 
 
-
 <h2>Crete your leaven</h2>
 
 <form class="leaven_form" method="post"> {% csrf_token %}
@@ -13,25 +12,15 @@
     <p>Name <input name="name" type="text"></p>
 <p>Sourdough <input name="sourdough" type="number"> grams</p>
 <p>Water <input name="water" type="number"> grams</p>
-<p>Proofing time<input name="=proofing" type="time"></p>
+<p>Proofing time<input name="=proofing" type="number"></p>
 <h4>Add Flours</h4>
 
-<div class="form-row" id="leaven_form">
-
-    <select name="flour">
-
         {% for flour in flours %}
-            <option value="{{ flour.id }}">{{ flour.name }} </option>
+
+            <p><input type="checkbox" value="{{ flour.id }}" name="flours"> {{ flour.name }}</p>
+
         {% endfor %}
 
-    </select>
-
-
-        <input name="flour_amount" type="text"> grams
-
-        <button id="next" type="button">Add next</button>
-
-</div>
 
 <p>
 
@@ -41,4 +30,3 @@
 
 {% endblock content %}
 
-        </script>

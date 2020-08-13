@@ -1,10 +1,29 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+
 <h2>Leavens in database</h2>
 
-    {% for leaven in object_list %}
-        {{ leaven.name }}
 
+    <table>
+        <thead>
+            <th>Name</th><th>Flours</th><th>Sourdough Amount</th><th>Water Amount</th><th>Proofing Time</th><th></th>
+
+        </thead>
+
+    {% for leaven in object_list %}
+
+
+            <tr><td>{{ leaven.name }}</td> <td> {{ leaven.get_flour_list }}</td> <td>{{ leaven.sourdough }}</td>
+                <td>{{ leaven.water }}</td> <td>{{ leaven.proofing }}</td>
+                <td><a href="{{leaven.get_add_flour_url}}">add flour</a></td>
+                <td><a href="{{leaven.get_delete_url}}">remove</a></td> </tr>
 
     {% empty %}
     No leavens added yet
     {% endfor %}
 
+    </table>
+
+{% endblock content %}

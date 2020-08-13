@@ -10,8 +10,8 @@ urlpatterns = [
     path("flour/edit_flour/<int:pk>", views.EditFlourView.as_view(), name='edit_flour'),
 
     path("leaven/add_leaven/", views.AddLeavenView.as_view(), name='add_leaven'),
-    #path("leaven/remove_leaven/<int:pk>", views.RemoveLeavenView.as_view(), name='remove_leaven'),
-    #path("leaven/edit_leaven/<int:pk>", views.EditLeavenView.as_view(), name='edit_leaven'),
+    path("leaven/remove_leaven/<int:pk>", views.RemoveLeavenView.as_view(), name='remove_leaven'),
+    path("leaven/flour_in_leaven/<int:pk>", views.FlourInLeavenView.as_view(), name='flour_in_leaven'),
     #path("leaven/flour_in_leaven/", views.FlourInLeavenView.as_view(), name='flour_in_leaven'),
     path("leaven/show_leavens/", views.ShowLeavensView.as_view(), name='show_leavens'),
 
