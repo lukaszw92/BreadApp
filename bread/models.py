@@ -59,6 +59,9 @@ class Leaven(models.Model):
 
     #flour in leaven set
 
+    def __str__(self):
+        return f'{self.name}'
+
     def get_delete_url(self):
         return reverse('remove_leaven', args=(self.pk,))
 

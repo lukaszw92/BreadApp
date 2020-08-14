@@ -16,7 +16,6 @@ Leaven related views
 class FlourInLeavenView(View):
 
     def get(self, request, pk):
-        leaven = Leaven.objects.get(pk=pk)
         form = FlourInLeavenForm()
         return render(request, "leaven/flour_in_leaven.html", {'form': form})
 
@@ -25,11 +24,11 @@ class FlourInLeavenView(View):
         form = FlourInLeavenForm(request.POST)
 
         if form.is_valid():
-            form.instance
-            leaven.flourinleaven_set.add
+            form_input = form.save(commit=False)
+            form_input.leaven = leaven
+            form_input.save()
             return redirect(reverse("show_leavens"))
         return render(request, 'leaven/flour_in_leaven.html', {'form': form})
-
 
 class AddLeavenView(View):
 

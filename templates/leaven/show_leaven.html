@@ -15,7 +15,12 @@
     {% for leaven in object_list %}
 
 
-            <tr><td>{{ leaven.name }}</td> <td> {{ leaven.get_flour_list }}</td> <td>{{ leaven.sourdough }}</td>
+            <tr><td>{{ leaven.name }}</td> <td>
+                {% for flour in leaven.flourinleaven_set.all %}
+                    <p>{{ flour }}</p>
+                {% endfor %}
+
+            </td> <td>{{ leaven.sourdough }}</td>
                 <td>{{ leaven.water }}</td> <td>{{ leaven.proofing }}</td>
                 <td><a href="{{leaven.get_add_flour_url}}">add flour</a></td>
                 <td><a href="{{leaven.get_delete_url}}">remove</a></td> </tr>

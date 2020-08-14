@@ -5,7 +5,7 @@ from bread.models import Leaven, FlourInLeaven
 class FlourInLeavenForm(forms.ModelForm):
     class Meta:
         model = FlourInLeaven
-        fields = ['grams', 'flour']
+        fields = ['flour', 'grams']
 
 
 class LeavenForm(forms.ModelForm):
