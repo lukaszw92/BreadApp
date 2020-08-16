@@ -2,12 +2,12 @@
 {% block content %}
 
 
-<h2>Select flour and their amouts to be added to leaven</h2>
+<h2>Select flour and their amounts to be added to the bread</h2>
 
 <form method="post">
 {% csrf_token %}
 {{ form.as_p }}
-<input type="submit" value="Continue"><
+<input type="submit" value="Continue">
     </form>
 
 

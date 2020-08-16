@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'BreadApp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bread',
+        'NAME': 'bread2',
         'HOST': 'localhost',
         'USER': 'postgres',
         'PASSWORD': 'coderslab'

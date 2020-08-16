@@ -24,9 +24,9 @@ Register
 Login/Logout
 
 <p>
-View all breads
-Create your bread
 
+    <a href="{% url 'show_breads' %}">View your breads</a>
+    <a href="{% url 'add_bread' %}">Create your bread</a>
     <a href="{% url 'show_leavens' %}">View leavens</a>
     <a href="{% url 'add_leaven' %}">Create a leaven</a>
     <a href="{% url 'add_flour' %}">View and add flours</a>

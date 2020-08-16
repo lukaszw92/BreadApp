@@ -1,5 +1,7 @@
 {% extends 'index.html' %}
 {% block content %}
+
+    <h3>Create new bread. You will be able to add flours later.</h3>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

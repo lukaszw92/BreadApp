@@ -5,7 +5,52 @@ from django.views import View
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
-from bread.forms import LeavenForm, FlourInLeavenForm
+from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm, FlourInBreadForm
+
+
+
+class ShowBreadsView(ListView):
+    model = Bread
+    template_name = 'bread/show_breads.html'
+    queryset = Bread.objects.all()
+
+class AddBreadView(View):
+
+    def get(self, request):
+        form = BreadForm()
+        return render(request, "bread/add_bread.html", {'form': form})
+
+    def post(self, request):
+        form = BreadForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("show_breads"))
+        return render(request, 'bread/add_bread.html', {'form': form})
+
+
+class FlourInBreadView(View):
+
+    def get(self, request, pk):
+        form = FlourInBreadForm()
+        return render(request, "bread/flour_in_bread.html", {'form': form})
+
+    def post(self, request, pk):
+        bread = Bread.objects.get(pk=pk)
+        form = FlourInBreadForm(request.POST)
+
+        if form.is_valid():
+            form_input = form.save(commit=False)
+            form_input.bread = bread
+            form_input.save()
+            return redirect(reverse("show_breads"))
+        return render(request, 'bread/flour_in_bread.html', {'form': form})
+
+
+class RemoveBreadView(DeleteView):
+    model = Bread
+    template_name = 'bread/remove_bread.html'
+    success_url = reverse_lazy('show_breads')
+
 
 
 """
@@ -34,14 +79,14 @@ class AddLeavenView(View):
 
     def get(self, request):
         form = LeavenForm()
-        return render(request, "leaven/l.html", {'form': form})
+        return render(request, "leaven/add_leaven.html", {'form': form})
 
     def post(self, request):
         form = LeavenForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(reverse("show_leavens"))
-        return render(request, 'leaven/l.html', {'form': form})
+        return render(request, 'leaven/add_leaven.html', {'form': form})
 
 
 
@@ -78,6 +123,13 @@ class RemoveGrainView(DeleteView):
     model = Grain
     template_name = 'grain/remove_grain.html'
     success_url = reverse_lazy('add_grain')
+
+
+class EditLeavenView(UpdateView):
+    model = Leaven
+    fields = '__all__'
+    template_name = 'leaven/edit_leaven.html'
+    success_url = reverse_lazy('show_leavens')
 
 
 """

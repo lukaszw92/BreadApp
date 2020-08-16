@@ -1,0 +1,41 @@
+{% extends 'index.html' %}
+{% block content %}
+
+    <h2>Your breads</h2>
+
+    <table>
+        <thead>
+            <th>Name</th><th>Date</th><th>Water</th><th>Salt</th><th>Flours</th><th>Leaven</th>
+        <th>1st proofing</th><th>2nd proofing</th><th>Baking time</th><th>Temperature</th>
+        <th>Rating</th><th>Notes</th><th></th><th></th><th></th><th></th>
+
+        </thead>
+
+    {% for bread in object_list %}
+
+        <tr>
+            <td>{{bread.name}}</td><td>{{bread.date}}</td><td>{{bread.water}}g</td><td>{{bread.salt}}g</td>
+
+        <td>
+            {% for flour in bread.get_flour_list %}
+                <p>{{ flour }}</p>
+                {% endfor %}
+
+        </td>
+
+            <td>{{bread.leaven}}</td><td>{{bread.first_proofing}}</td>
+        <td>{{bread.second_proofing}}</td><td>{{bread.baking_time}}</td><td>{{bread.baking_temperature}}°C</td>
+        <td>{{bread.rating}}/10</td><td>{{bread.notes}}</td>
+
+            <td><a href="{{bread.get_add_flour_url}}">add flour</a></td>
+                <td><a href="{{bread.get_delete_url}}">remove</a></td>
+
+        </tr>
+
+        {{ bread.get_bread_mass }}
+
+    {% endfor %}
+
+    </table>
+
+{% endblock content %}

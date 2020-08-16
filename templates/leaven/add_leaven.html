@@ -1,32 +1,11 @@
-
-
 {% extends 'index.html' %}
-
 {% block content %}
 
-
-<h2>Crete your leaven</h2>
-
-<form class="leaven_form" method="post"> {% csrf_token %}
-
-    <p>Name <input name="name" type="text"></p>
-<p>Sourdough <input name="sourdough" type="number"> grams</p>
-<p>Water <input name="water" type="number"> grams</p>
-<p>Proofing time<input name="=proofing" type="number"></p>
-<h4>Add Flours</h4>
-
-        {% for flour in flours %}
-
-            <p><input type="checkbox" value="{{ flour.id }}" name="flours"> {{ flour.name }}</p>
-
-        {% endfor %}
-
-
-<p>
-
-<input type="submit" value="Add leaven recipe to database">
-
+    <h3>Create new leaven. You will be able to add flours later.</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Add">
     </form>
 
 {% endblock content %}
-
