@@ -10,7 +10,7 @@ class Bread(models.Model):
     water = models.IntegerField()
     salt = models.IntegerField()
     flour_mix = models.ManyToManyField('Flour', through='FlourInBread')
-    leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE)
+    leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE) #FIX this should be in leaven
 
     first_proofing = models.DurationField(null=True, blank=True)
     second_proofing = models.DurationField(null=True, blank=True)
@@ -19,7 +19,7 @@ class Bread(models.Model):
 
     rating = models.IntegerField(choices=list(zip(range(1, 11), range(1, 11))), unique=True)  # change to choice field
     notes = models.TextField(null=True, blank=True)
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
 
     def get_total_flour_weight(self):
@@ -143,11 +143,3 @@ class FlourInBread(models.Model):
 
     def __str__(self):
         return f'{self.flour} | {self.grams}g'
-
-
-
-
-
-
-
-
