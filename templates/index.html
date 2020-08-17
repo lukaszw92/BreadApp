@@ -21,7 +21,11 @@
 
 <h2>Menu</h2>
 Register
-Login/Logout
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">Log out</a>
+    {% else %}
+        <a href="{% url 'login' %}">Log in</a>
+    {% endif %}
 
 <p>
 
