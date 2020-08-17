@@ -15,10 +15,12 @@ urlpatterns = [
     path("leaven/show_leavens/", views.ShowLeavensView.as_view(), name='show_leavens'),
     path("leaven/edit_leaven/<int:pk>", views.EditLeavenView.as_view(), name='edit_leaven'), #CLUMSY
 
-    path("leaven/add_bread/", views.AddBreadView.as_view(), name='add_bread'),
-    path("leaven/flour_in_bread/<int:pk>", views.FlourInBreadView.as_view(), name='flour_in_bread'),
-    path("leaven/remove_bread/<int:pk>", views.RemoveBreadView.as_view(), name='remove_bread'),
-    path("leaven/show_breads/", views.ShowBreadsView.as_view(), name='show_breads'),
+    path("bread/add_bread/", views.AddBreadView.as_view(), name='add_bread'),
+    path("bread/flour_in_bread/<int:pk>", views.FlourInBreadView.as_view(), name='flour_in_bread'),
+    path("bread/remove_bread/<int:pk>", views.RemoveBreadView.as_view(), name='remove_bread'),
+    path("bread/show_breads/", views.ShowBreadsView.as_view(), name='show_breads'),
+    path("bread/show_all_breads/", views.ShowAllBreadsView.as_view(), name='show_all_breads'),
+
     # path("leaven/edit_bread/<int:pk>", views.EditBreadView.as_view(), name='edit_bread'), #CLUMSY
 
 ]
