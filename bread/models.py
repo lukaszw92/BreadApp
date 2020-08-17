@@ -22,22 +22,28 @@ class Bread(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
 
 
-    ## klucz obcy do usera aby każdy user miał swoje chleby
+    def get_total_flour_weight(self):
+        flours = self.flourinbread_set.all()
+        weights = []
+        for flour in flours:
+            weights.append(flour.grams)
+        return sum(weights)
 
-    #    def get_bread_weight(self):
-    # get_bread_hydration(self):
 
-#NOT WORKING
+    def weight(self):
+        water = self.water
+        salt = self.salt
+        flours_weight = self.get_total_flour_weight()
+        leaven_weight = self.leaven.leaven_weight()
+        return water + salt + flours_weight + leaven_weight
 
-    # def get_bread_mass(self):
-    #     water = self.water
-    #     salt = self.salt
-    #     flours = self.flour_mix.all()
-    #     flour_masses = []
-    #     for flour in flours:
-    #         flour = int(flour)
-    #         flour_masses.append(flour)
-    #     return sum(flour_masses) + int(water) + int(salt)
+    def hydration(self):
+        water = self.water
+        flours_weight = self.get_total_flour_weight()
+        if flours_weight == 0:
+            return "n/a"
+        return f'{water / flours_weight * 100}%'
+
 
     def __str__(self):
         return f'{self.name}'
@@ -92,6 +98,19 @@ class Leaven(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    def get_total_flour_weight(self):
+        flours = self.flourinleaven_set.all()
+        weights = []
+        for flour in flours:
+            weights.append(flour.grams)
+        return sum(weights)
+
+    def leaven_weight(self):
+        water = self.water
+        sourdough = self.sourdough
+        flours_weight = self.get_total_flour_weight()
+        return water + sourdough + flours_weight
 
     def get_delete_url(self):
         return reverse('remove_leaven', args=(self.pk,))
