@@ -11,7 +11,7 @@ class FlourInLeavenForm(forms.ModelForm):
 class LeavenForm(forms.ModelForm):
     class Meta:
         model = Leaven
-        exclude = ['flour']
+        exclude = ['flour', 'user']
 
 
 class FlourInBreadForm(forms.ModelForm):

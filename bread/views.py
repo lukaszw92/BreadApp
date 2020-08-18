@@ -62,6 +62,15 @@ class RemoveBreadView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('show_breads')
 
 
+class EditBreadView(LoginRequiredMixin,  UpdateView):
+    model = Bread
+    fields = ['name', 'date', 'water', 'salt', 'flour_mix', 'leaven', 'first_proofing',
+              'second_proofing', 'baking_time', 'baking_temperature', 'rating', 'notes']
+    template_name = 'bread/edit_bread.html'
+    success_url = reverse_lazy('show_breads')
+
+
+
 """
 Leaven related views
 """
@@ -94,12 +103,21 @@ class AddLeavenView(LoginRequiredMixin, View):
     def post(self, request):
         form = LeavenForm(request.POST)
         if form.is_valid():
+            form_input = form.save(commit=False)
+            user = request.user
+            form_input.user = user
             form.save()
             return redirect(reverse("show_leavens"))
         return render(request, 'leaven/add_leaven.html', {'form': form})
 
 
-class ShowLeavensView(LoginRequiredMixin, ListView):
+class ShowLeavensView(View):
+    def get(self, request):
+        leavens = Leaven.objects.filter(user=request.user)
+        return render(request, "leaven/show_leaven.html", {'object_list': leavens })
+
+
+class ShowAllLeavensView(ListView):
     model = Leaven
     template_name = 'leaven/show_leaven.html'
     queryset = Leaven.objects.all()
@@ -108,6 +126,13 @@ class ShowLeavensView(LoginRequiredMixin, ListView):
 class RemoveLeavenView(LoginRequiredMixin, DeleteView):
     model = Leaven
     template_name = 'leaven/remove_leaven.html'
+    success_url = reverse_lazy('show_leavens')
+
+
+class EditLeavenView(LoginRequiredMixin, UpdateView):
+    model = Leaven
+    fields = ['name', 'sourdough', 'water', 'flour', 'proofing']
+    template_name = 'leaven/edit_leaven.html'
     success_url = reverse_lazy('show_leavens')
 
 
@@ -134,11 +159,7 @@ class RemoveGrainView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('add_grain')
 
 
-class EditLeavenView(LoginRequiredMixin, UpdateView):
-    model = Leaven
-    fields = '__all__'
-    template_name = 'leaven/edit_leaven.html'
-    success_url = reverse_lazy('show_leavens')
+
 
 
 """

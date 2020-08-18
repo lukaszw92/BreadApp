@@ -6,10 +6,10 @@ from django.views.generic import UpdateView, CreateView
 from django.contrib.auth.forms import UserCreationForm
 
 
-
 class LoginView(View):
     def get(self, request):
         return render(request, 'registration/login.html')
+
 
 class CreateUserView(CreateView):
     model = User

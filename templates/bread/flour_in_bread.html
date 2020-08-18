@@ -1,14 +1,18 @@
 {% extends 'index.html' %}
 {% block content %}
 
+    {% load static %}
 
 <h2>Select flour and their amounts to be added to the bread</h2>
 
 <form method="post">
 {% csrf_token %}
 {{ form.as_p }}
-<input type="submit" value="Continue">
+<input type="submit" value="Submit">
     </form>
 
+    <button class="next">Add next flour</button>
+
+      <script src="{% static 'js/flour_form.js' %}"></script>
 
 {% endblock content %}

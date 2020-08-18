@@ -1,3 +1,6 @@
+{% extends 'index.html' %}
+
+{% block content %}
 
 <form method="post">
     {% csrf_token %}
@@ -5,4 +8,6 @@
     <input type="submit" value="Remove">
 </form>
 <a href="{% url 'show_leavens' %}">No, back to leaven list!</a>
+
+{% endblock content %}
 

@@ -1,6 +1,12 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
 <form method="post">
     {% csrf_token %}
     <p>Are you sure you want to remove this bread - {{ object }} ?</p>
     <input type="submit" value="Remove">
 </form>
 <a href="{% url 'show_breads' %}">No, back to bread list!</a>
+
+{% endblock content %}

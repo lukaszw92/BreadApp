@@ -10,7 +10,7 @@ class Bread(models.Model):
     water = models.IntegerField()
     salt = models.IntegerField()
     flour_mix = models.ManyToManyField('Flour', through='FlourInBread')
-    leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE) #FIX this should be in leaven
+    leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE)  # FIX this should be in leaven
 
     first_proofing = models.DurationField(null=True, blank=True)
     second_proofing = models.DurationField(null=True, blank=True)
@@ -21,14 +21,12 @@ class Bread(models.Model):
     notes = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
-
     def get_total_flour_weight(self):
         flours = self.flourinbread_set.all()
         weights = []
         for flour in flours:
             weights.append(flour.grams)
         return sum(weights)
-
 
     def weight(self):
         water = self.water
@@ -43,7 +41,6 @@ class Bread(models.Model):
         if flours_weight == 0:
             return "n/a"
         return f'{water / flours_weight * 100}%'
-
 
     def __str__(self):
         return f'{self.name}'
@@ -87,14 +84,15 @@ class Flour(models.Model):
     def __str__(self):
         return f'{self.name} | {self.brand}'
 
+
 class Leaven(models.Model):
     name = models.CharField(max_length=100)
     sourdough = models.IntegerField()
     water = models.IntegerField()
     flour = models.ManyToManyField(Flour, through='FlourInLeaven')
-    proofing = models.DurationField(null=True)
+    proofing = models.DurationField(null=True, verbose_name="Fermentation")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
-    #flour in leaven set
 
     def __str__(self):
         return f'{self.name}'
@@ -124,6 +122,7 @@ class Leaven(models.Model):
     def get_add_flour_url(self):
         return reverse('flour_in_leaven', args=(self.pk,))
 
+
 class FlourInLeaven(models.Model):
     flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
     leaven = models.ForeignKey(Leaven, on_delete=models.CASCADE)
@@ -131,9 +130,6 @@ class FlourInLeaven(models.Model):
 
     def __str__(self):
         return f'{self.flour} | {self.grams}g'
-
-
-#   def get_leaven_weight(self):
 
 
 class FlourInBread(models.Model):
