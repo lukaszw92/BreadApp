@@ -17,7 +17,7 @@ class Bread(models.Model):
     baking_time = models.DurationField()
     baking_temperature = models.IntegerField()
 
-    rating = models.IntegerField(choices=list(zip(range(1, 11), range(1, 11))), unique=True)  # change to choice field
+    rating = models.IntegerField(choices=list(zip(range(1, 11), range(1, 11))))
     notes = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
@@ -135,7 +135,7 @@ class FlourInLeaven(models.Model):
 class FlourInBread(models.Model):
     flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
     bread = models.ForeignKey(Bread, on_delete=models.CASCADE)
-    grams = models.IntegerField()
+    grams = models.IntegerField(null=True)
 
     def __str__(self):
         return f'{self.flour} | {self.grams}g'

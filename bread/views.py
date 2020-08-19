@@ -38,22 +38,20 @@ class AddBreadView(LoginRequiredMixin, View):
         return render(request, 'bread/add_bread.html', {'form': form})
 
 
-class FlourInBreadView(LoginRequiredMixin, View):
-
+class FlourInBreadView(View):
     def get(self, request, pk):
-        form = FlourInBreadForm()
-        return render(request, "bread/flour_in_bread.html", {'form': form})
+        flours = Flour.objects.all()
+        context = {'flours': flours}
+        return render(request, "bread/flour_in_bread2.html", context)
 
     def post(self, request, pk):
+        flours = request.POST.getlist('flour')
+        grams = request.POST.getlist('grams')
         bread = Bread.objects.get(pk=pk)
-        form = FlourInBreadForm(request.POST)
+        for flour, gram in zip(flours, grams):
+            FlourInBread.objects.create(bread=bread, flour_id=flour, grams=gram)
+        return redirect(reverse("show_breads"))
 
-        if form.is_valid():
-            form_input = form.save(commit=False)
-            form_input.bread = bread
-            form_input.save()
-            return redirect(reverse("show_breads"))
-        return render(request, 'bread/flour_in_bread.html', {'form': form})
 
 
 class RemoveBreadView(LoginRequiredMixin, DeleteView):
@@ -157,8 +155,6 @@ class RemoveGrainView(LoginRequiredMixin, DeleteView):
     model = Grain
     template_name = 'grain/remove_grain.html'
     success_url = reverse_lazy('add_grain')
-
-
 
 
 
