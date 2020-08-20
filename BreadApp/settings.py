@@ -82,7 +82,8 @@ DATABASES = {
         'NAME': 'bread2',
         'HOST': 'localhost',
         'USER': 'postgres',
-        'PASSWORD': 'coderslab'
+        'PASSWORD': 'coderslab',
+
     }
 }
 

@@ -34,8 +34,9 @@ class AddBreadView(LoginRequiredMixin, View):
             user = request.user
             new_bread.user = user
             form.save()
-            return reverse('flour_in_bread', args=(new_bread.pk,))
+            return reverse('show_breads') #return reverse('flour_in_bread', args=(new_bread.pk,))
         return render(request, 'bread/add_bread.html', {'form': form})
+
 
 
 class FlourInBreadView(View):

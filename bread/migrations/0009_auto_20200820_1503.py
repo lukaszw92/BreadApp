@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='bread',
             name='user',
-            field=models.ForeignKey(default='lukasz', on_delete=django.db.models.deletion.CASCADE, to='auth.user'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='auth.user'),
             preserve_default=False,
         ),
         migrations.AlterField(

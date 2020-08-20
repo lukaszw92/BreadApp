@@ -9,6 +9,7 @@ def Client():
     client = Client
     return client
 
+
 @pytest.fixture
 def user():
     user = User.objects.create(username='Kowalski')

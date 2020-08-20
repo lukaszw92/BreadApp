@@ -8,10 +8,10 @@ def positive_validator(value):
     if value <= 0:
         raise ValidationError("Value has to be greater than 0.")
 
+
 def non_negative_validator(value):
     if value < 0:
         raise ValidationError("Value cannot be negative.")
-
 
 
 class Bread(models.Model):
@@ -32,6 +32,7 @@ class Bread(models.Model):
     notes = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+
     def get_total_flour_weight(self):
         flours = self.flourinbread_set.all()
         weights = []
@@ -51,7 +52,7 @@ class Bread(models.Model):
         flours_weight = self.get_total_flour_weight()
         if flours_weight == 0:
             return "n/a"
-        return f'{water / flours_weight * 100}%'
+        return f'{round(water / flours_weight * 100)}%'
 
     def __str__(self):
         return f'{self.name}'
@@ -103,7 +104,6 @@ class Leaven(models.Model):
     flour = models.ManyToManyField(Flour, through='FlourInLeaven')
     proofing = models.DurationField(null=True, verbose_name="Fermentation")
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-
 
     def __str__(self):
         return f'{self.name}'
