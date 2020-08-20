@@ -5,6 +5,9 @@
 
 <h2>Select flour and their amounts to be added to the bread</h2>
 
+    <button class="next">Add next flour</button>
+    <button class="delete">Delete last flour</button>
+
 <form method="post">
 {% csrf_token %}
 <div class="fields">
@@ -22,8 +25,6 @@
 
 <input class="submit" type="submit" value="Submit">
     </form>
-
-    <button class="next">Add next flour</button>
 
       <script src="{% static 'js/flour_form.js' %}"></script>
 

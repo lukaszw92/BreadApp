@@ -30,11 +30,11 @@ class AddBreadView(LoginRequiredMixin, View):
     def post(self, request):
         form = BreadForm(request.POST)
         if form.is_valid():
-            form_input = form.save(commit=False)
+            new_bread = form.save(commit=False)
             user = request.user
-            form_input.user = user
+            new_bread.user = user
             form.save()
-            return redirect(reverse("show_breads"))
+            return reverse('flour_in_bread', args=(new_bread.pk,))
         return render(request, 'bread/add_bread.html', {'form': form})
 
 
@@ -48,10 +48,20 @@ class FlourInBreadView(View):
         flours = request.POST.getlist('flour')
         grams = request.POST.getlist('grams')
         bread = Bread.objects.get(pk=pk)
-        for flour, gram in zip(flours, grams):
-            FlourInBread.objects.create(bread=bread, flour_id=flour, grams=gram)
+        for flour, weight in zip(flours, grams):
+            FlourInBread.objects.create(bread=bread, flour_id=flour, grams=weight)
         return redirect(reverse("show_breads"))
 
+class RemoveFlourBreadView(LoginRequiredMixin, DeleteView):
+    model = FlourInBread
+    template_name = 'bread/remove_flour_bread.html'
+    success_url = reverse_lazy('show_breads')
+
+class EditFlourBreadView(LoginRequiredMixin, UpdateView):
+    model = FlourInBread
+    fields = ['flour', 'grams']
+    template_name = 'bread/edit_flour_bread.html'
+    success_url = reverse_lazy('show_breads')
 
 
 class RemoveBreadView(LoginRequiredMixin, DeleteView):
@@ -62,7 +72,7 @@ class RemoveBreadView(LoginRequiredMixin, DeleteView):
 
 class EditBreadView(LoginRequiredMixin,  UpdateView):
     model = Bread
-    fields = ['name', 'date', 'water', 'salt', 'flour_mix', 'leaven', 'first_proofing',
+    fields = ['name', 'date', 'water', 'salt', 'leaven', 'first_proofing',
               'second_proofing', 'baking_time', 'baking_temperature', 'rating', 'notes']
     template_name = 'bread/edit_bread.html'
     success_url = reverse_lazy('show_breads')
@@ -85,10 +95,10 @@ class FlourInLeavenView(LoginRequiredMixin, View):
         form = FlourInLeavenForm(request.POST)
 
         if form.is_valid():
-            form_input = form.save(commit=False)
-            form_input.leaven = leaven
-            form_input.save()
-            return redirect(reverse("show_leavens"))
+            new_flour = form.save(commit=False)
+            new_flour.leaven = leaven
+            new_flour.save()
+            return redirect(reverse("show_leavens")) #return reverse('flour_in_bread', args=(new_bread.pk,))
         return render(request, 'leaven/flour_in_leaven.html', {'form': form})
 
 
@@ -101,9 +111,9 @@ class AddLeavenView(LoginRequiredMixin, View):
     def post(self, request):
         form = LeavenForm(request.POST)
         if form.is_valid():
-            form_input = form.save(commit=False)
+            new_leaven = form.save(commit=False)
             user = request.user
-            form_input.user = user
+            new_leaven.user = user
             form.save()
             return redirect(reverse("show_leavens"))
         return render(request, 'leaven/add_leaven.html', {'form': form})

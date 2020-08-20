@@ -19,7 +19,8 @@
 
         <td>
             {% for flour in bread.get_flour_list %}
-                <p>{{ flour }}</p>
+                <p>{{ flour }} <a href="{{ flour.get_edit_url }}">edit</a>
+                    <a href="{{ flour.get_delete_url }}">remove</a></p>
                 {% endfor %}
 
         </td>

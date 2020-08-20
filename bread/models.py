@@ -1,25 +1,36 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+
+
+def positive_validator(value):
+    if value <= 0:
+        raise ValidationError("Value has to be greater than 0.")
+
+def non_negative_validator(value):
+    if value < 0:
+        raise ValidationError("Value cannot be negative.")
+
 
 
 class Bread(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField()
 
-    water = models.IntegerField()
-    salt = models.IntegerField()
+    water = models.IntegerField(validators=[positive_validator])
+    salt = models.IntegerField(validators=[non_negative_validator])
     flour_mix = models.ManyToManyField('Flour', through='FlourInBread')
     leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE)  # FIX this should be in leaven
 
     first_proofing = models.DurationField(null=True, blank=True)
     second_proofing = models.DurationField(null=True, blank=True)
     baking_time = models.DurationField()
-    baking_temperature = models.IntegerField()
+    baking_temperature = models.IntegerField(validators=[positive_validator])
 
     rating = models.IntegerField(choices=list(zip(range(1, 11), range(1, 11))))
     notes = models.TextField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_total_flour_weight(self):
         flours = self.flourinbread_set.all()
@@ -73,7 +84,7 @@ class Flour(models.Model):
     brand = models.CharField(max_length=100, null=True)
     grain = models.ForeignKey(Grain, on_delete=models.SET_NULL, null=True)
     wholegrain = models.BooleanField(default=False)
-    type = models.IntegerField(null=True)
+    type = models.IntegerField(null=True, validators=[non_negative_validator])
 
     def get_delete_url(self):
         return reverse('remove_flour', args=(self.pk,))
@@ -87,8 +98,8 @@ class Flour(models.Model):
 
 class Leaven(models.Model):
     name = models.CharField(max_length=100)
-    sourdough = models.IntegerField()
-    water = models.IntegerField()
+    sourdough = models.IntegerField(validators=[positive_validator])
+    water = models.IntegerField(validators=[positive_validator])
     flour = models.ManyToManyField(Flour, through='FlourInLeaven')
     proofing = models.DurationField(null=True, verbose_name="Fermentation")
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -126,7 +137,7 @@ class Leaven(models.Model):
 class FlourInLeaven(models.Model):
     flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
     leaven = models.ForeignKey(Leaven, on_delete=models.CASCADE)
-    grams = models.IntegerField(null=True)
+    grams = models.IntegerField(null=True, validators=[positive_validator])
 
     def __str__(self):
         return f'{self.flour} | {self.grams}g'
@@ -135,7 +146,13 @@ class FlourInLeaven(models.Model):
 class FlourInBread(models.Model):
     flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
     bread = models.ForeignKey(Bread, on_delete=models.CASCADE)
-    grams = models.IntegerField(null=True)
+    grams = models.IntegerField(null=True, validators=[positive_validator])
 
     def __str__(self):
         return f'{self.flour} | {self.grams}g'
+
+    def get_delete_url(self):
+        return reverse('remove_flour_bread', args=(self.pk,))
+
+    def get_edit_url(self):
+        return reverse('edit_flour_bread', args=(self.pk,))

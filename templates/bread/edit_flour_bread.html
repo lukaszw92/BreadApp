@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<p>You are editing {{ object }}</p>
+
+<form action="" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Save changes"></form>
+
+<a href="{% url 'show_breads' %}">Don't save changes</a>
+
+{% endblock content %}
