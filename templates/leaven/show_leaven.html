@@ -18,7 +18,7 @@
 
             <tr><td>{{ leaven.name }}</td> <td>
                 {% for flour in leaven.flourinleaven_set.all %}
-                    <p>{{ flour }}</p>
+                    <p>{{ flour }} <a href="{{ flour.get_delete_url }}">remove</a></p>
                 {% endfor %}
 
             </td> <td>{{ leaven.sourdough }}</td>

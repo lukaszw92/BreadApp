@@ -25,3 +25,11 @@ def grains():
         a = Grain.objects.create(name=x)
         grain_list.append(a)
     return grain_list
+
+@pytest.fixture()
+def flour():
+    Grain.objects.create(name='z')
+    z = Grain.objects.get(name='z')
+    flour = Flour.objects.create(name='x', brand='y', grain=z, wholegrain=True, type=500)
+    flour.save()
+    return flour

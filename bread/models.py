@@ -13,6 +13,12 @@ def non_negative_validator(value):
     if value < 0:
         raise ValidationError("Value cannot be negative.")
 
+def no_negative_duration(value):
+    days = value.days
+    seconds = value.seconds
+    if 24*3600*days + seconds <= 0:
+        raise ValidationError("nie tak")
+
 
 class Bread(models.Model):
     name = models.CharField(max_length=100)
@@ -25,7 +31,7 @@ class Bread(models.Model):
 
     first_proofing = models.DurationField(null=True, blank=True)
     second_proofing = models.DurationField(null=True, blank=True)
-    baking_time = models.DurationField()
+    baking_time = models.DurationField(validators=[no_negative_duration])
     baking_temperature = models.IntegerField(validators=[positive_validator])
 
     rating = models.IntegerField(choices=list(zip(range(1, 11), range(1, 11))))
@@ -141,6 +147,9 @@ class FlourInLeaven(models.Model):
 
     def __str__(self):
         return f'{self.flour} | {self.grams}g'
+
+    def get_delete_url(self):
+        return reverse('remove_flour_leaven', args=(self.pk,))
 
 
 class FlourInBread(models.Model):

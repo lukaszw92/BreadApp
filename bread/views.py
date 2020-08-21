@@ -34,7 +34,7 @@ class AddBreadView(LoginRequiredMixin, View):
             user = request.user
             new_bread.user = user
             form.save()
-            return reverse('show_breads') #return reverse('flour_in_bread', args=(new_bread.pk,))
+            return redirect(reverse('flour_in_bread', args=(new_bread.pk,)))
         return render(request, 'bread/add_bread.html', {'form': form})
 
 
@@ -50,8 +50,15 @@ class FlourInBreadView(View):
         grams = request.POST.getlist('grams')
         bread = Bread.objects.get(pk=pk)
         for flour, weight in zip(flours, grams):
+            if int(weight) <= 0:
+                return redirect(reverse('error'))
             FlourInBread.objects.create(bread=bread, flour_id=flour, grams=weight)
         return redirect(reverse("show_breads"))
+
+
+def Error(request):
+    return render(request, 'bread/error.html')
+
 
 class RemoveFlourBreadView(LoginRequiredMixin, DeleteView):
     model = FlourInBread
@@ -99,7 +106,7 @@ class FlourInLeavenView(LoginRequiredMixin, View):
             new_flour = form.save(commit=False)
             new_flour.leaven = leaven
             new_flour.save()
-            return redirect(reverse("show_leavens")) #return reverse('flour_in_bread', args=(new_bread.pk,))
+            return redirect(reverse("show_leavens"))
         return render(request, 'leaven/flour_in_leaven.html', {'form': form})
 
 
@@ -142,6 +149,12 @@ class EditLeavenView(LoginRequiredMixin, UpdateView):
     model = Leaven
     fields = ['name', 'sourdough', 'water', 'flour', 'proofing']
     template_name = 'leaven/edit_leaven.html'
+    success_url = reverse_lazy('show_leavens')
+
+
+class RemoveFlourLeavenView(LoginRequiredMixin, DeleteView):
+    model = FlourInLeaven
+    template_name = 'bread/remove_flour_bread.html'
     success_url = reverse_lazy('show_leavens')
 
 
