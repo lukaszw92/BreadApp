@@ -17,7 +17,7 @@ def no_negative_duration(value):
     days = value.days
     seconds = value.seconds
     if 24*3600*days + seconds <= 0:
-        raise ValidationError("nie tak")
+        raise ValidationError("Baking/proofing time cannot be negative.")
 
 
 class Bread(models.Model):
@@ -27,7 +27,7 @@ class Bread(models.Model):
     water = models.IntegerField(validators=[positive_validator])
     salt = models.IntegerField(validators=[non_negative_validator])
     flour_mix = models.ManyToManyField('Flour', through='FlourInBread')
-    leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE)  # FIX this should be in leaven
+    leaven = models.ForeignKey('Leaven', on_delete=models.CASCADE)
 
     first_proofing = models.DurationField(null=True, blank=True)
     second_proofing = models.DurationField(null=True, blank=True)
