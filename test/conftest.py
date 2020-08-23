@@ -16,6 +16,15 @@ def user():
     user.save()
     return user
 
+@pytest.fixture
+def user2():
+    user = User.objects.create(username='Zielinski')
+    user.set_password('dobrydzien')
+    user.save()
+    return user
+
+
+
 @pytest.fixture()
 def grains():
     grain_list = []
