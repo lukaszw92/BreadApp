@@ -13,11 +13,18 @@ def non_negative_validator(value):
     if value < 0:
         raise ValidationError("Value cannot be negative.")
 
+
 def no_negative_duration(value):
     days = value.days
     seconds = value.seconds
     if 24*3600*days + seconds <= 0:
         raise ValidationError("Baking/proofing time cannot be negative.")
+
+
+"""
+Bread model contains information about bread ingredients, preparation and baking process.
+It also contains functions that calculate total weight of the bread and water percentage (hydration
+"""
 
 
 class Bread(models.Model):
@@ -37,7 +44,6 @@ class Bread(models.Model):
     rating = models.IntegerField(choices=list(zip(range(1, 11), range(1, 11))))
     notes = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
 
     def get_total_flour_weight(self):
         flours = self.flourinbread_set.all()
@@ -76,6 +82,11 @@ class Bread(models.Model):
         return reverse('flour_in_bread', args=(self.pk,))
 
 
+"""
+Grain model stores data about grains that flours are made of.
+"""
+
+
 class Grain(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
@@ -84,6 +95,12 @@ class Grain(models.Model):
 
     def get_delete_url(self):
         return reverse('remove_grain', args=(self.pk,))
+
+
+"""
+Flour model stores data about flours used to bake bread. "Type" field relates to Polish flour type number system
+in which the number indicates the amount of ash in 100g of the dry mass of the flour.
+"""
 
 
 class Flour(models.Model):
@@ -101,6 +118,11 @@ class Flour(models.Model):
 
     def __str__(self):
         return f'{self.name} | {self.brand}'
+
+
+"""
+Leaven model contains leaven data and functions that calculate weight of each flour that the leaven contains.
+"""
 
 
 class Leaven(models.Model):
@@ -140,6 +162,12 @@ class Leaven(models.Model):
         return reverse('flour_in_leaven', args=(self.pk,))
 
 
+"""
+FlourInLeaven model connects leavens with flours that leavens contain. 
+It also stores information about the amounts of each type of flour in given leaven.
+"""
+
+
 class FlourInLeaven(models.Model):
     flour = models.ForeignKey(Flour, on_delete=models.CASCADE)
     leaven = models.ForeignKey(Leaven, on_delete=models.CASCADE)
@@ -150,6 +178,12 @@ class FlourInLeaven(models.Model):
 
     def get_delete_url(self):
         return reverse('remove_flour_leaven', args=(self.pk,))
+
+
+"""
+FlourInBread model connects breads with flours that breads contain. 
+It also stores information about the amounts of each type of flour in given bread.
+"""
 
 
 class FlourInBread(models.Model):

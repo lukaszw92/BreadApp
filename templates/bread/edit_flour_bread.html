@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h3 class="sub-header">You are editing {{ object }}</h3>
+<h3 class="sub-header">You are editing {{ object }} in bread {{ object.bread }}</h3>
 
 <form action="" method="post">
   {% csrf_token %}
