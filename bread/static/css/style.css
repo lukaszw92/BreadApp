@@ -8,11 +8,16 @@ th, td {
   padding: 8px;
 }
 
+thead{
+ background: linear-gradient(to right, #db8a5d, #784b33);
+}
+
 th {
   padding-top: 12px;
   padding-bottom: 12px;
-  background-color: #784b33;
+  background-color: rgba(120, 75, 51, 0.75);
   color: white;
 }
 
-tr:nth-child(even) {background-color: rgba(120, 75, 51, 0.18);}
+tr:nth-child(even) {background-color: rgba(200, 180, 165, 0.9);}
+tr:nth-child(odd) {background-color: rgba(200, 180, 165, 0.75);}

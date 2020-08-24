@@ -3,13 +3,14 @@
 
     {% load static %}
 
-<h2>Select flour and their amounts to be added to the bread</h2>
+<h3 class="sub-header">Select flour and their amounts to be added to the bread</h3>
 
-    <button class="next">Add next flour</button>
-    <button class="delete">Delete last flour</button>
 
 
 <form method="post">
+
+<p><button class="delete">Delete last flour</button> <button class="next">Add next flour</button>  </p>
+
 {% csrf_token %}
 <div class="fields">
     <p>Flour

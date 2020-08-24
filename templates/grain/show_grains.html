@@ -1,4 +1,4 @@
-<h2>Available grains</h2>
+<h3 class="sub-header" >Available grains</h3>
 
 <table style="width:25%">
 
@@ -10,7 +10,7 @@
 
     {% for grain in object_list %}
 
-        <tr><td>{{ grain }}</td><td><a href="{{grain.get_delete_url}}">remove</a></td></tr>
+        <tr><td>{{ grain }}</td><td><a class="remove" href="{{grain.get_delete_url}}">remove</a></td></tr>
 
     {% empty %}
     No grains added yet

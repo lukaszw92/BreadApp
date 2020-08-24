@@ -1,0 +1,54 @@
+form {
+    alignment: center;
+    text-align: left;
+    background: rgba(120, 75, 51, 0.9);
+    font-family: sans-serif;
+    display: inline-flex;
+    flex-direction: column;
+    padding: 40px;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+textarea {
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    display: block;
+    padding:15px;
+    border:1px solid #aaa;
+    box-shadow: inset 0 2px 2px rgba(0,0,0,.1);
+    width: 500px;
+}
+
+.submit {
+    background: black;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 40px;
+    border:0;
+    float: right;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.next{
+    background: blue;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 40px;
+    border:0;
+    float: right;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.delete{
+    background: red;
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 10px 40px;
+    border:0;
+    float: right;
+    cursor: pointer;
+    transition: 0.5s;
+}
+

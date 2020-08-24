@@ -1,6 +1,6 @@
 
 
-<h2>Flours in database</h2>
+<h3 class="sub-header">Flours in database</h3>
 
 <table style="width:50%">
 
@@ -17,9 +17,9 @@
 
             <td> {{ flour.wholegrain }}</td> <td> {{ flour.type }} </td>
 
-            <td> <a href="{{ flour.get_delete_url}}">remove</a></td>
+            <td> <a class="remove" href="{{ flour.get_delete_url}}">remove</a></td>
 
-        <td> <a href="{{ flour.get_edit_url}}">edit</a></td> </tr>
+        <td> <a class="edit" href="{{ flour.get_edit_url}}">edit</a></td> </tr>
 
 
     {% empty %}

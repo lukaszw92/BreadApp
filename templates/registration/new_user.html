@@ -1,11 +1,11 @@
 {% extends 'index.html' %}
 {% block content %}
-<h2>Sign up</h2>
+<h3 class="sub-header" >Sign up</h3>
 
 <form method="post">
 {% csrf_token %}
 {{ form.as_p }}
-<input type="submit" value="Sign up">
+<input class="submit" type="submit" value="Sign up">
     </form>
 
     <a href="{% url 'main' %}">Back to homepage</a>

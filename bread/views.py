@@ -11,6 +11,8 @@ from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm, FlourInBreadFo
 
 class ShowBreadsView(View):
     def get(self, request):
+        if request.user.is_anonymous:
+            return redirect(reverse('login'))
         breads = Bread.objects.filter(user=request.user)
         return render(request, "bread/show_breads.html", {'object_list': breads})
 
@@ -39,7 +41,7 @@ class AddBreadView(LoginRequiredMixin, View):
 
 
 
-class FlourInBreadView(View):
+class FlourInBreadView(LoginRequiredMixin, View):
     def get(self, request, pk):
         flours = Flour.objects.all()
         context = {'flours': flours}
@@ -129,6 +131,8 @@ class AddLeavenView(LoginRequiredMixin, View):
 
 class ShowLeavensView(View):
     def get(self, request):
+        if request.user.is_anonymous:
+            return redirect(reverse('login'))
         leavens = Leaven.objects.filter(user=request.user)
         return render(request, "leaven/show_leaven.html", {'object_list': leavens })
 
@@ -147,7 +151,7 @@ class RemoveLeavenView(LoginRequiredMixin, DeleteView):
 
 class EditLeavenView(LoginRequiredMixin, UpdateView):
     model = Leaven
-    fields = ['name', 'sourdough', 'water', 'flour', 'proofing']
+    fields = ['name', 'sourdough', 'water', 'proofing']
     template_name = 'leaven/edit_leaven.html'
     success_url = reverse_lazy('show_leavens')
 

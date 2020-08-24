@@ -5,7 +5,7 @@
 <form method="post">
     {% csrf_token %}
     <p>Are you sure you want to remove {{ object }} from {{ object.leaven }}?</p>
-    <input type="submit" value="Remove">
+    <input class="submit" type="submit" value="Remove">
 </form>
 <a href="{% url 'show_leavens' %}">No, back to leaven list!</a>
 

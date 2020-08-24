@@ -2,12 +2,12 @@
 
 {% block content %}
 
-<p>You are editing {{ bread }}</p>
+<h3 class="sub-header">You are editing {{ bread }}</h3>
 
 <form action="" method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <input type="submit" value="Save changes"></form>
+  <input class="submit" type="submit" value="Save changes"></form>
 
 <a href="{% url 'show_breads' %}">Don't save changes</a>
 

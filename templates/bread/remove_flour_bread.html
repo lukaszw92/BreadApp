@@ -4,8 +4,8 @@
 
 <form method="post">
     {% csrf_token %}
-    <p>Are you sure you want to remove {{ object }} from {{ object.bread }}?</p>
-    <input type="submit" value="Remove">
+    <h3 class="sub-header" >Are you sure you want to remove {{ object }} from {{ object.bread }}?</h3>
+    <input class="submit" type="submit" value="Remove">
 </form>
 <a href="{% url 'show_breads' %}">No, back to bread list!</a>
 

@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<h2>Leavens in database</h2>
+<h3 class="sub-header" >Leavens in database</h3>
 
 
     <table>
@@ -18,14 +18,14 @@
 
             <tr><td>{{ leaven.name }}</td> <td>
                 {% for flour in leaven.flourinleaven_set.all %}
-                    <p>{{ flour }} <a href="{{ flour.get_delete_url }}">remove</a></p>
+                    <p>{{ flour }} <a class="remove"  href="{{ flour.get_delete_url }}">remove</a></p>
                 {% endfor %}
 
             </td> <td>{{ leaven.sourdough }}</td>
                 <td>{{ leaven.water }}</td> <td>{{ leaven.proofing }}</td>
-                <td><a href="{{leaven.get_add_flour_url}}">add flour</a></td>
-                <td><a href="{{leaven.get_delete_url}}">remove</a></td>
-                <td><a href="{{leaven.get_edit_url}}">edit</a></td>
+                <td><a class="add_item" href="{{leaven.get_add_flour_url}}">add flour</a></td>
+                <td><a class="remove" href="{{leaven.get_delete_url}}">remove</a></td>
+                <td><a class="edit" href="{{leaven.get_edit_url}}">edit</a></td>
 
             </tr>
 

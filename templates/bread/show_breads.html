@@ -1,14 +1,14 @@
 {% extends 'index.html' %}
 {% block content %}
 
-    <h2>Your breads</h2>
+    <h3 class="sub-header" >Your breads</h3>
 
     <table>
         <thead>
             <th>Name</th><th>Date</th><th>Water</th><th>Salt</th><th>Flours</th><th>Leaven</th>
             <th>Total Weight</th><th>Hydration</th>
         <th>1st proofing</th><th>2nd proofing</th><th>Baking time</th><th>Temperature</th>
-        <th>Rating</th><th>Notes</th><th></th><th></th><th></th><th></th>
+        <th>Rating</th><th>Notes</th><th></th><th></th><th></th>
 
         </thead>
 
@@ -19,8 +19,8 @@
 
         <td>
             {% for flour in bread.get_flour_list %}
-                <p>{{ flour }} <a href="{{ flour.get_edit_url }}">edit</a>
-                    <a href="{{ flour.get_delete_url }}">remove</a></p>
+                <p>{{ flour }} <a class="edit" href="{{ flour.get_edit_url }}">edit</a>
+                    <a class="remove" href="{{ flour.get_delete_url }}">remove</a></p>
                 {% endfor %}
 
         </td>
@@ -30,9 +30,9 @@
         <td>{{bread.second_proofing}}</td><td>{{bread.baking_time}}</td><td>{{bread.baking_temperature}}°C</td>
         <td>{{bread.rating}}/10</td><td>{{bread.notes}}</td>
 
-            <td><a href="{{bread.get_add_flour_url}}">add flour</a></td>
-                <td><a href="{{bread.get_delete_url}}">remove</a></td>
-        <td><a href="{{bread.get_edit_url}}">edit</a></td>
+            <td><a class="add_item" href="{{bread.get_add_flour_url}}">add flour</a></td>
+                <td><a class="remove" href="{{bread.get_delete_url}}">remove</a></td>
+        <td><a class="edit" href="{{bread.get_edit_url}}">edit</a></td>
 
         </tr>
 

@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<p>Are you sure you want to remove this flour?</p>
+<h3 class="sub-header">Are you sure you want to remove this flour?</h3>
 
 <form method="post">
     {% csrf_token %}
         <p>{{ object.name }} | {{ object.brand }}</p>
     <p>By doing so you will also delete all breads that contain this flour.</p>
-    <input type="submit" value="Remove">
+    <input class="submit" type="submit" value="Remove">
 </form>
 <a href="{% url 'add_flour' %}">No, back to flour list!</a>
 
