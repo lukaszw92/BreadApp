@@ -75,10 +75,26 @@ class FlourInBreadView(LoginRequiredMixin, View):
         flours = request.POST.getlist('flour')
         grams = request.POST.getlist('grams')
         bread = Bread.objects.get(pk=pk)
+
+        already_there = []
+        for flour_in_bread in bread.get_flour_list():
+            already_there.append(str(flour_in_bread.flour.id))
+
         for flour, weight in zip(flours, grams):
+            added_flours = []
+
             if int(weight) <= 0:
-                return redirect(reverse('error'))
+                return redirect(reverse('error', args=["Value has to be positive"]))
+
+            elif flour in added_flours:
+                return redirect(reverse('error', args=["You cannot add the same flour more than once."]))
+
+            elif flour in already_there:
+                return redirect(reverse('error', args=["This flour is already there in the bread."]))
+
             FlourInBread.objects.create(bread=bread, flour_id=flour, grams=weight)
+            added_flours.append(flour)
+
         return redirect(reverse("show_breads"))
 
 """
@@ -87,8 +103,8 @@ the validation for that form also had to be done manually - thus separate error 
 """
 
 
-def error(request):
-    return render(request, 'bread/error.html')
+def error(request, error_message):
+    return render(request, 'bread/error.html', context={'error_message': error_message})
 
 
 """
@@ -298,8 +314,9 @@ class AddFlourView(LoginRequiredMixin, CreateView):
 RemoveFlourView removes flour from database.
 """
 
-class RemoveFlourView(LoginRequiredMixin, DeleteView):
+class RemoveFlourView(PermissionRequiredMixin, DeleteView):
 
+    permission_required = 'flour.delete_flour'
 
     model = Flour
     template_name = 'flour/remove_flour.html'
@@ -309,7 +326,11 @@ class RemoveFlourView(LoginRequiredMixin, DeleteView):
 EditFlourView edits flour given flour data.
 """
 
-class EditFlourView(LoginRequiredMixin, UpdateView):
+
+class EditFlourView(PermissionRequiredMixin, UpdateView):
+
+    permission_required = 'flour.update_flour'
+
     model = Flour
     fields = '__all__'
     template_name = 'flour/edit_flour.html'

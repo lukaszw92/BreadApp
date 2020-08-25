@@ -1,2 +1,5 @@
-Value has to be positive.
+{% extends 'index.html' %}
+{% block content %}
+{{ error_message }}
 <a href="{% url 'show_breads' %}">Back to bread list.</a>
+{% endblock %}

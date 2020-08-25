@@ -19,7 +19,7 @@ urlpatterns = [
 
     path("bread/add_bread/", views.AddBreadView.as_view(), name='add_bread'),
     path("bread/flour_in_bread/<int:pk>", views.FlourInBreadView.as_view(), name='flour_in_bread'),
-    path("bread/flour_in_bread/error/", views.error, name='error'),
+    path("bread/flour_in_bread/error/<str:error_message>", views.error, name='error'),
     path("bread/remove_bread/<int:pk>", views.RemoveBreadView.as_view(), name='remove_bread'),
     path("bread/remove_flour_bread/<int:pk>", views.RemoveFlourBreadView.as_view(), name='remove_flour_bread'),
     path("bread/edit_flour_bread/<int:pk>", views.EditFlourBreadView.as_view(), name='edit_flour_bread'),

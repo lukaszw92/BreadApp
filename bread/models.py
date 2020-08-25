@@ -82,6 +82,7 @@ class Bread(models.Model):
             return "n/a"
         return f'{round(water / flours_weight * 100)}%'
 
+
     def __str__(self):
         return f'{self.name}'
 
