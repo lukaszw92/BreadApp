@@ -1,6 +1,6 @@
 import pytest
 from django.test import Client
-from django.contrib.auth.models import User, Permission, ContentType
+from django.contrib.auth.models import User, Permission, ContentType, Group
 from bread.models import Grain, Flour, FlourInBread, FlourInLeaven, Bread, Leaven
 
 
@@ -13,6 +13,7 @@ def Client():
 def user():
     user = User.objects.create(username='Kowalski')
     user.set_password('dziendobry')
+    user.is_superuser = True
     user.save()
     return user
 
@@ -20,9 +21,9 @@ def user():
 def user2():
     user = User.objects.create(username='Zielinski')
     user.set_password('dobrydzien')
+    user.is_superuser = True
     user.save()
     return user
-
 
 
 @pytest.fixture()
@@ -32,6 +33,7 @@ def grains():
         a = Grain.objects.create(name=x)
         grain_list.append(a)
     return grain_list
+
 
 @pytest.fixture()
 def flours():

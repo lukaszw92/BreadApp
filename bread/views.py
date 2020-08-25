@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
@@ -264,7 +265,10 @@ so deleting and adding a grain is simpler and more intuitive than editing it.
 """
 
 
-class RemoveGrainView(LoginRequiredMixin, DeleteView):
+class RemoveGrainView(PermissionRequiredMixin, DeleteView):
+
+    permission_required = 'grain.delete_grain'
+
     model = Grain
     template_name = 'grain/remove_grain.html'
     success_url = reverse_lazy('add_grain')
@@ -277,6 +281,7 @@ Flour related views
 """
 AddFlourView adds flour to database. Note: flours are not assigned to any user and can be viewed by all users.
 """
+
 
 class AddFlourView(LoginRequiredMixin, CreateView):
     model = Flour
@@ -294,6 +299,8 @@ RemoveFlourView removes flour from database.
 """
 
 class RemoveFlourView(LoginRequiredMixin, DeleteView):
+
+
     model = Flour
     template_name = 'flour/remove_flour.html'
     success_url = reverse_lazy('add_flour')

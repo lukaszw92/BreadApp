@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth.models import User
 from django.urls import reverse
 
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, FlourInBread, Bread
@@ -9,23 +10,38 @@ def test_index_view(client):
     assert response.status_code == 200
 
 
+# @pytest.mark.django_db
+# def test_sign_up_view(client):
+#     response = client.post(reverse('sign_up'), {'username':'Marian', 'password1':'Kotek666', 'password2':'Kotek666'})
+#     assert response.status_code == 302
+#     assert User.objects.get(username='Marian')
+
+
 @pytest.mark.django_db
 def test_show_all_view(client):
     response = client.get(reverse('show_all_breads'))
+    assert response.status_code == 200
+    response = client.get(reverse('show_all_leavens'))
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
 def test_grain_view(client, user):
     client.login(username='Kowalski', password='dziendobry')
-    for x in 'abcde':
+    for x in 'abc':
         response = client.post(reverse('add_grain'), {'name': x})
-    assert response.status_code == 302
+        assert response.status_code == 302
     assert Grain.objects.get(name='a')
+    response = client.get(reverse('add_grain'))
+    assert response.status_code == 200
+    grains = response.context['object_list']
+    assert len(grains) == 3
     a = Grain.objects.get(name='a')
     response = client.post(reverse('remove_grain', args=(a.pk,)))
     assert response.status_code == 302
-    assert len(Grain.objects.all()) == 4
+    response = client.get(reverse('add_grain'))
+    grains = response.context['object_list']
+    assert len(grains) == 2
 
 
 @pytest.mark.django_db
@@ -37,14 +53,21 @@ def test_flour_view(client, user, grains):
                                                   'grain': z.id, 'wholegrain': True, 'type': 500})
     assert response.status_code == 302
     assert Flour.objects.get(name='x', brand='y', grain=z, wholegrain=True, type=500)
+
+    response = client.get(reverse('add_flour'))
+    flours = response.context['object_list']
+    assert len(flours) == 1
+
     x = Flour.objects.get(name='x')
     response = client.post(reverse('edit_flour', args=(x.pk,)), {'name': 'f', 'brand': 'b',
                                                                  'grain': a.id, 'wholegrain': False, 'type': 1500})
-
     x = Flour.objects.get(name='f', brand='b', grain=a.id, wholegrain=False, type=1500)
     response = client.post(reverse('remove_flour', args=(x.pk,)))
     assert response.status_code == 302
     assert len(Flour.objects.all()) == 0
+    response = client.get(reverse('add_flour'))
+    flours = response.context['object_list']
+    assert len(flours) == 0
 
 
 @pytest.mark.django_db
@@ -53,10 +76,20 @@ def test_leaven_view(client, user):
     response = client.post(reverse('add_leaven'), {'name': 'x', 'sourdough': 1, 'water': 1, 'proofing': '01:00:00'})
     assert response.status_code == 302
     assert Leaven.objects.get(name='x', sourdough=1, water=1, proofing='01:00:00', user=user.id)
+    response = client.get(reverse('show_leavens'))
+    leavens = response.context['object_list']
+    assert len(leavens) == 1
     example_leaven = Leaven.objects.get(name='x')
+
+    response = client.post(reverse('edit_leaven', args=(example_leaven.pk,)), {'name': 'y', 'sourdough': 1,
+                                                                               'water': 1, 'proofing': '01:00:00'})
+
+    example_leaven = Leaven.objects.get(name='y')
     response = client.post(reverse('remove_leaven', args=(example_leaven.pk,)))
     assert response.status_code == 302
-    assert len(Leaven.objects.all()) == 0
+    response = client.get(reverse('show_leavens'))
+    leavens = response.context['object_list']
+    assert len(leavens) == 0
 
 
 @pytest.mark.django_db
@@ -123,13 +156,19 @@ def test_my_breads_view(client, user, user2, flours, leaven):
     client.logout()
 
     client.login(username='Kowalski', password='dziendobry')
-    for a, b, c in zip('xy', range(1, 3), range(1, 3)):
+    for a, b, c in zip('wxyz', range(1, 5), range(1, 5)):
         response = client.post(reverse('add_bread'), {'name': a, 'date': '2020-09-30', 'water': b, 'salt': c,
                                                       'leaven': leaven.id, 'baking_time': '01:00:00',
                                                       'baking_temperature': 210, 'rating': 5})
         assert response.status_code == 302
-    assert len(Bread.objects.filter(user__username="Kowalski")) == 2
+    assert len(Bread.objects.filter(user__username="Kowalski")) == 4
     assert len(Bread.objects.filter(user__username="Zielinski")) == 3
+    response = client.get(reverse('show_breads'))
+    assert response.status_code == 200
+    breads = response.context['object_list']
+    assert len(breads) == 4
+
+
 
 
 

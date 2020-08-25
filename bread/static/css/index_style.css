@@ -11,8 +11,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding:0 10px;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-    background: linear-gradient(to right, #db8a5d, #784b33);
+    background: rgba(165, 124, 42, 0.42);
 }
 
 .sub-header {
@@ -20,7 +19,6 @@ body {
     align-items: center;
     justify-content: space-between;
     padding:10px 10px;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
     background: rgba(165, 124, 42, 0.42);
     margin: 0;
 }
@@ -40,10 +38,9 @@ body {
 }
 .menu-list a {
     padding:15px 20px;
-    border-left: 1px solid rgba(0,0,0,0.1);
-    text-transform: lowercase;
+    text-transform: unset;
     text-decoration: none;
-    color:#fff;
+    color:black;
     display: block;
     transition: 0.4s;
 }
@@ -51,10 +48,9 @@ body {
     border-right: 1px solid rgba(0,0,0,0.1);
 }
 .menu-list a:hover {
-    background: #fff;
-    color: #FF5777;
+    background: rgba(255, 255, 255, 0.6);
+    color: black;
 }
-
 
 
 .remove {
