@@ -53,6 +53,7 @@ def test_flour_view(client, user, grains):
                                                   'grain': z.id, 'wholegrain': True, 'type': 500})
     assert response.status_code == 302
     assert Flour.objects.get(name='x', brand='y', grain=z, wholegrain=True, type=500)
+    assert len(Flour.objects.all()) == 1
 
     response = client.get(reverse('add_flour'))
     flours = response.context['object_list']
@@ -76,6 +77,7 @@ def test_leaven_view(client, user):
     response = client.post(reverse('add_leaven'), {'name': 'x', 'sourdough': 1, 'water': 1, 'proofing': '01:00:00'})
     assert response.status_code == 302
     assert Leaven.objects.get(name='x', sourdough=1, water=1, proofing='01:00:00', user=user.id)
+    assert len(Leaven.objects.all()) == 1
     response = client.get(reverse('show_leavens'))
     leavens = response.context['object_list']
     assert len(leavens) == 1
@@ -87,6 +89,7 @@ def test_leaven_view(client, user):
     example_leaven = Leaven.objects.get(name='y')
     response = client.post(reverse('remove_leaven', args=(example_leaven.pk,)))
     assert response.status_code == 302
+    assert len(Leaven.objects.all()) == 0
     response = client.get(reverse('show_leavens'))
     leavens = response.context['object_list']
     assert len(leavens) == 0
@@ -116,10 +119,18 @@ def test_bread_view(client, user, leaven):
                                                       'baking_temperature': 210, 'rating': 5})
         assert response.status_code == 302
     assert len(Bread.objects.all()) == 4
+
+    response = client.get(reverse('show_breads'))
+    breads = response.context['object_list']
+    assert len(breads) == 4
+
     a = Bread.objects.get(name='a')
     response = client.post(reverse('remove_bread', args=(a.pk,)))
     assert response.status_code == 302
     assert len(Bread.objects.all()) == 3
+    response = client.get(reverse('show_breads'))
+    breads = response.context['object_list']
+    assert len(breads) == 3
 
 
 

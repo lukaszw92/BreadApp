@@ -23,7 +23,7 @@ def no_negative_duration(value):
 
 """
 Bread model contains information about bread ingredients, preparation and baking process.
-It also contains functions that calculate total weight of the bread and water percentage (hydration
+It also contains functions that calculate total weight of the bread and water percentage (hydration)
 """
 
 
@@ -45,12 +45,23 @@ class Bread(models.Model):
     notes = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+
+    """
+    get_total_flour_weight function sums weight of all flours added to the bread upon final mixing (just before baking)
+    It does not take into account flour that got to the bread in leaven.
+    """
+
     def get_total_flour_weight(self):
         flours = self.flourinbread_set.all()
         weights = []
         for flour in flours:
             weights.append(flour.grams)
         return sum(weights)
+
+    """
+    weight function calculates total weight of all ingredients of the given bread including leaven (leaven weight is 
+    calculated in separate function.
+    """
 
     def weight(self):
         water = self.water
@@ -59,9 +70,14 @@ class Bread(models.Model):
         leaven_weight = self.leaven.leaven_weight()
         return water + salt + flours_weight + leaven_weight
 
+    """
+    hydration function calculates percentage of water per flour mass. Flour and water mass are taken from both
+    leaven and bread.
+    """
+
     def hydration(self):
-        water = self.water
-        flours_weight = self.get_total_flour_weight()
+        water = self.water + self.leaven.water
+        flours_weight = self.get_total_flour_weight() + self.leaven.get_total_flour_weight()
         if flours_weight == 0:
             return "n/a"
         return f'{round(water / flours_weight * 100)}%'
@@ -136,6 +152,10 @@ class Leaven(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+    """
+    get_total_flour_weight function calculates flour weight in leaven.
+    """
+
     def get_total_flour_weight(self):
         flours = self.flourinleaven_set.all()
         weights = []
@@ -143,11 +163,15 @@ class Leaven(models.Model):
             weights.append(flour.grams)
         return sum(weights)
 
+    """
+    leaven_weight function calculates total weight of given leaven also taking sourdough into account.
+    It is assumed that flour to water ratio in sourdough is 50/50.
+    """
+
     def leaven_weight(self):
-        water = self.water
-        sourdough = self.sourdough
-        flours_weight = self.get_total_flour_weight()
-        return water + sourdough + flours_weight
+        water = self.water + (self.sourdough / 2)
+        flours_weight = self.get_total_flour_weight() + (self.sourdough / 2)
+        return round(water + flours_weight)
 
     def get_delete_url(self):
         return reverse('remove_leaven', args=(self.pk,))
@@ -174,7 +198,7 @@ class FlourInLeaven(models.Model):
     grams = models.IntegerField(null=True, validators=[positive_validator])
 
     def __str__(self):
-        return f'{self.flour} | {self.grams}g'
+        return f'{self.flour} | {self.grams} g'
 
     def get_delete_url(self):
         return reverse('remove_flour_leaven', args=(self.pk,))
@@ -192,10 +216,14 @@ class FlourInBread(models.Model):
     grams = models.IntegerField(null=True, validators=[positive_validator])
 
     def __str__(self):
-        return f'{self.flour} | {self.grams}g'
+        return f'{self.flour} | {self.grams} g'
 
     def get_delete_url(self):
         return reverse('remove_flour_bread', args=(self.pk,))
 
     def get_edit_url(self):
         return reverse('edit_flour_bread', args=(self.pk,))
+
+
+
+

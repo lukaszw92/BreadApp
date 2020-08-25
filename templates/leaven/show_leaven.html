@@ -21,8 +21,8 @@
                     <p>{{ flour }} <a class="remove"  href="{{ flour.get_delete_url }}">remove</a></p>
                 {% endfor %}
 
-            </td> <td>{{ leaven.sourdough }}</td>
-                <td>{{ leaven.water }}</td> <td>{{ leaven.proofing }}</td>
+            </td> <td>{{ leaven.sourdough }} g</td>
+                <td>{{ leaven.water }} g</td> <td>{{ leaven.proofing }}</td>
                 <td><a class="add_item" href="{{leaven.get_add_flour_url}}">add flour</a></td>
                 <td><a class="remove" href="{{leaven.get_delete_url}}">remove</a></td>
                 <td><a class="edit" href="{{leaven.get_edit_url}}">edit</a></td>
