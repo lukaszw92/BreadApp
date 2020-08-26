@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import ValidationError
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
@@ -8,12 +10,9 @@ from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
 from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm, FlourInBreadForm
 
+"""Bread related views"""
 
-
-
-"""
-ShowBreadsView displays all breads created by the user who is currently logged in"
-"""
+"""ShowBreadsView displays all breads created by the user who is currently logged in"""
 
 
 class ShowBreadsView(View):
@@ -24,9 +23,7 @@ class ShowBreadsView(View):
         return render(request, "bread/show_breads.html", {'object_list': breads})
 
 
-"""
-ShowAllBreadsView displays all breads in database regardless of whether user is logged in"
-"""
+"""ShowAllBreadsView displays all breads in database regardless of whether user is logged in"""
 
 
 class ShowAllBreadsView(ListView):
@@ -35,10 +32,8 @@ class ShowAllBreadsView(ListView):
     queryset = Bread.objects.all()
 
 
-"""
-AddBreadView adds a bread to database. Added bread belongs to the user who is logged in at the moment of creation.
-Due to intermediate table being used to assign flours to bread, flours are added in a separate view.
-"""
+"""AddBreadView adds a bread to database. Added bread belongs to the user who is logged in at the moment of creation.
+Due to intermediate table being used to assign flours to bread, flours are added in a separate view."""
 
 
 class AddBreadView(LoginRequiredMixin, View):
@@ -58,20 +53,22 @@ class AddBreadView(LoginRequiredMixin, View):
         return render(request, 'bread/add_bread.html', {'form': form})
 
 
-"""
-FlourInBreadView adds flours and their amounts to given bread. 
-User gets redirected to this view after creating the base bread.
-You can also add flours to the bread after the initial bread creation process. 
+"""FlourInBreadView adds flours and their amounts to given bread. User gets redirected to this view after creating 
+the base bread. You can also add flours to the bread after the initial bread creation process. 
 
 Because multiple flours can be added at the same time (see file static/js/flour_form.js)
-the form had to be created and handled "manually" - not using generic views.
-"""
+the form had to be created and handled "manually" - not using generic views."""
 
 
 class FlourInBreadView(LoginRequiredMixin, View):
     def get(self, request, pk):
         flours = Flour.objects.all()
         context = {'flours': flours}
+        bread = Bread.objects.get(pk=pk)
+
+        if bread.user != request.user:
+            return redirect(reverse('error', args=["You cannot add flour to someone else's bread."]))
+
         return render(request, "bread/flour_in_bread2.html", context)
 
     def post(self, request, pk):
@@ -98,17 +95,18 @@ class FlourInBreadView(LoginRequiredMixin, View):
             FlourInBread.objects.create(bread=bread, flour_id=flour, grams=weight)
             added_flours.append(flour)
 
-
         return redirect(reverse("show_breads"))
 
-"""
-Due to the fact that FlourInBreadView had to be created manually
-the validation for that form also had to be done manually - thus separate error function.
-"""
+
+"""shows error message passed to the function argument for bread and leaven views"""
 
 
 def error(request, error_message):
     return render(request, 'bread/error.html', context={'error_message': error_message})
+
+
+def error_leaven(request, error_message):
+    return render(request, 'leaven/error.html', context={'error_message': error_message})
 
 
 """
@@ -121,16 +119,34 @@ class RemoveFlourBreadView(LoginRequiredMixin, DeleteView):
     template_name = 'bread/remove_flour_bread.html'
     success_url = reverse_lazy('show_breads')
 
+    def dispatch(self, request, *args, **kwargs):
+        enable_delete = super(RemoveFlourBreadView, self).dispatch(request, *args, **kwargs)
+        flour_in_bread = self.get_object()
+        creator = flour_in_bread.bread.user
+        deleter = self.request.user
+        if creator != deleter:
+            return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
+        return enable_delete
 
-"""
-EditFlourBreadView edits given flower in given bread
-"""
+
+"""EditFlourBreadView edits given flower in given bread"""
+
 
 class EditFlourBreadView(LoginRequiredMixin, UpdateView):
     model = FlourInBread
     fields = ['flour', 'grams']
     template_name = 'bread/edit_flour_bread.html'
     success_url = reverse_lazy('show_breads')
+
+    def dispatch(self, request, *args, **kwargs):
+        enable_delete = super(EditFlourBreadView, self).dispatch(request, *args, **kwargs)
+        flour_in_bread = self.get_object()
+        creator = flour_in_bread.bread.user
+        editor = self.request.user
+        if creator != editor:
+            return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
+        return enable_delete
+
 
 """
 RemoveBreadView removes given bread.
@@ -142,24 +158,14 @@ class RemoveBreadView(LoginRequiredMixin, DeleteView):
     template_name = 'bread/remove_bread.html'
     success_url = reverse_lazy('show_breads')
 
-    """
-    Making sure that one will not delete someone else's bread.
-    """
-
     def dispatch(self, request, *args, **kwargs):
-        enable_delete = super(RemoveBreadView, self).dispatch(request, *args, **kwargs)
         bread = self.get_object()
-        creator = bread.user
-        deleter = self.request.user
-        if creator != deleter:
-            return redirect(reverse('error', args=["You cannot remove someone else's bread."]))
-        return enable_delete
+        if bread.user != self.request.user:
+            return redirect(reverse('error', args=["You cannot delete someone else's bread."]))
+        return super(RemoveBreadView, self).dispatch(request, *args, **kwargs)
 
 
-"""
-EditBreadView edits given bread. 
-Flours from given bread can be edited in a separate view.
-"""
+"""EditBreadView edits given bread. Flours from given bread can be edited in a separate view."""
 
 
 class EditBreadView(LoginRequiredMixin, UpdateView):
@@ -183,10 +189,8 @@ class EditBreadView(LoginRequiredMixin, UpdateView):
 Leaven related views
 """
 
-"""
-AddLeavenView adds a leaven to database. Added leaven belongs to the user who is logged in at the moment of creation.
-Due to intermediate table being used to assign flours to leaven, flours are added in a separate view.
-"""
+"""AddLeavenView adds a leaven to database. Added leaven belongs to the user who is logged in at the moment of creation.
+Due to intermediate table being used to assign flours to leaven, flours are added in a separate view."""
 
 
 class AddLeavenView(LoginRequiredMixin, View):
@@ -206,18 +210,21 @@ class AddLeavenView(LoginRequiredMixin, View):
         return render(request, 'leaven/add_leaven.html', {'form': form})
 
 
-"""
-FlourInLeavenView adds flours and their amounts to given leaven. 
+"""FlourInLeavenView adds flours and their amounts to given leaven. 
 
 Because mixing multiple flours in one leaven is not a common practice
-unlike with FlourInBreadView user can only add flours to the leaven one at the time.
-"""
+unlike with FlourInBreadView user can only add flours to the leaven one at the time."""
 
 
 class FlourInLeavenView(LoginRequiredMixin, View):
 
     def get(self, request, pk):
         form = FlourInLeavenForm()
+        leaven = Leaven.objects.get(pk=pk)
+
+        if leaven.user != request.user:
+            return redirect(reverse('error', args=["You cannot add flour to someone else's leaven."]))
+
         return render(request, "leaven/flour_in_leaven.html", {'form': form})
 
     def post(self, request, pk):
@@ -231,9 +238,11 @@ class FlourInLeavenView(LoginRequiredMixin, View):
             return redirect(reverse("show_leavens"))
         return render(request, 'leaven/flour_in_leaven.html', {'form': form})
 
+
 """
 ShowLeavensView displays all leavens created by the user who is currently logged in"
 """
+
 
 class ShowLeavensView(View):
     def get(self, request):
@@ -242,33 +251,55 @@ class ShowLeavensView(View):
         leavens = Leaven.objects.filter(user=request.user)
         return render(request, "leaven/show_leaven.html", {'object_list': leavens})
 
+
 """
 ShowAllLeavensView displays all leavens in database regardless of whether user is logged in"
 """
+
 
 class ShowAllLeavensView(ListView):
     model = Leaven
     template_name = 'leaven/show_leaven.html'
     queryset = Leaven.objects.all()
 
+
 """
 RemoveLeavenView removes given leaven from database.
 """
+
 
 class RemoveLeavenView(LoginRequiredMixin, DeleteView):
     model = Leaven
     template_name = 'leaven/remove_leaven.html'
     success_url = reverse_lazy('show_leavens')
 
+    def dispatch(self, request, *args, **kwargs):
+        leaven = self.get_object()
+        if leaven.user != self.request.user:
+            return redirect(reverse('error', args=["You cannot delete someone else's leaven."]))
+        return super(RemoveLeavenView, self).dispatch(request, *args, **kwargs)
+
+
 """
 EditLeavenView edits given leaven from database.
 """
+
 
 class EditLeavenView(LoginRequiredMixin, UpdateView):
     model = Leaven
     fields = ['name', 'sourdough', 'water', 'proofing']
     template_name = 'leaven/edit_leaven.html'
     success_url = reverse_lazy('show_leavens')
+
+    def dispatch(self, request, *args, **kwargs):
+        enable_delete = super(EditLeavenView, self).dispatch(request, *args, **kwargs)
+        leaven = self.get_object()
+        creator = leaven.user
+        editor = self.request.user
+        if creator != editor:
+            return redirect(reverse('error', args=["You cannot edit someone else's leaven."]))
+        return enable_delete
+
 
 """
 RemoveFlourLeavenView removes flour from given leaven from database.
@@ -280,49 +311,20 @@ class RemoveFlourLeavenView(LoginRequiredMixin, DeleteView):
     template_name = 'bread/remove_flour_bread.html'
     success_url = reverse_lazy('show_leavens')
 
-
-"""
-Grain related views
-"""
-
-"""
-AddsGrainView adds grain to database. Note: grains are not assigned to any user and can be viewed by all users.
-"""
-
-
-class AddGrainView(LoginRequiredMixin, CreateView):
-    model = Grain
-    fields = '__all__'
-    success_url = reverse_lazy('add_grain')
-    template_name = 'grain/add_grain.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({'object_list': Grain.objects.all()})
-        return context
-
-"""
-RemoveGrainView removes grain from database. Edit view was not created for grains as grains only have one attribute
-so deleting and adding a grain is simpler and more intuitive than editing it.
-"""
+    def dispatch(self, request, *args, **kwargs):
+        enable_delete = super(RemoveFlourLeavenView, self).dispatch(request, *args, **kwargs)
+        flour_in_leaven = self.get_object()
+        creator = flour_in_leaven.leaven.user
+        deleter = self.request.user
+        if creator != deleter:
+            return redirect(reverse('error', args=["You cannot edit someone else's leaven."]))
+        return enable_delete
 
 
-class RemoveGrainView(PermissionRequiredMixin, DeleteView):
 
-    permission_required = 'grain.delete_grain'
+"""Flour related views"""
 
-    model = Grain
-    template_name = 'grain/remove_grain.html'
-    success_url = reverse_lazy('add_grain')
-
-
-"""
-Flour related views
-"""
-
-"""
-AddFlourView adds flour to database. Note: flours are not assigned to any user and can be viewed by all users.
-"""
+"""AddFlourView adds flour to database. Note: flours are not assigned to any user and can be viewed by all users."""
 
 
 class AddFlourView(LoginRequiredMixin, CreateView):
@@ -336,28 +338,54 @@ class AddFlourView(LoginRequiredMixin, CreateView):
         context.update({'object_list': Flour.objects.all()})
         return context
 
-"""
-RemoveFlourView removes flour from database.
-"""
+
+"""RemoveFlourView removes flour from database."""
+
 
 class RemoveFlourView(PermissionRequiredMixin, DeleteView):
-
     permission_required = 'flour.delete_flour'
 
     model = Flour
     template_name = 'flour/remove_flour.html'
     success_url = reverse_lazy('add_flour')
 
-"""
-EditFlourView edits flour given flour data.
-"""
+
+"""EditFlourView edits flour given flour data."""
 
 
 class EditFlourView(PermissionRequiredMixin, UpdateView):
-
     permission_required = 'flour.update_flour'
 
     model = Flour
     fields = '__all__'
     template_name = 'flour/edit_flour.html'
     success_url = reverse_lazy('add_flour')
+
+
+"""Grain related views"""
+
+"""AddsGrainView adds grain to database. Note: grains are not assigned to any user and can be viewed by all users."""
+
+
+class AddGrainView(LoginRequiredMixin, CreateView):
+    model = Grain
+    fields = '__all__'
+    success_url = reverse_lazy('add_grain')
+    template_name = 'grain/add_grain.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'object_list': Grain.objects.all()})
+        return context
+
+
+"""RemoveGrainView removes grain from database. Edit view was not created for grains as grains only have one attribute
+so deleting and adding a grain is simpler and more intuitive than editing it."""
+
+
+class RemoveGrainView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'grain.delete_grain'
+
+    model = Grain
+    template_name = 'grain/remove_grain.html'
+    success_url = reverse_lazy('add_grain')
