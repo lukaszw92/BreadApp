@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
@@ -7,6 +7,9 @@ from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
 from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm, FlourInBreadForm
+
+
+
 
 """
 ShowBreadsView displays all breads created by the user who is currently logged in"
@@ -80,8 +83,8 @@ class FlourInBreadView(LoginRequiredMixin, View):
         for flour_in_bread in bread.get_flour_list():
             already_there.append(str(flour_in_bread.flour.id))
 
+        added_flours = []
         for flour, weight in zip(flours, grams):
-            added_flours = []
 
             if int(weight) <= 0:
                 return redirect(reverse('error', args=["Value has to be positive"]))
@@ -94,6 +97,7 @@ class FlourInBreadView(LoginRequiredMixin, View):
 
             FlourInBread.objects.create(bread=bread, flour_id=flour, grams=weight)
             added_flours.append(flour)
+
 
         return redirect(reverse("show_breads"))
 
@@ -138,6 +142,19 @@ class RemoveBreadView(LoginRequiredMixin, DeleteView):
     template_name = 'bread/remove_bread.html'
     success_url = reverse_lazy('show_breads')
 
+    """
+    Making sure that one will not delete someone else's bread.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        enable_delete = super(RemoveBreadView, self).dispatch(request, *args, **kwargs)
+        bread = self.get_object()
+        creator = bread.user
+        deleter = self.request.user
+        if creator != deleter:
+            return redirect(reverse('error', args=["You cannot remove someone else's bread."]))
+        return enable_delete
+
 
 """
 EditBreadView edits given bread. 
@@ -151,6 +168,15 @@ class EditBreadView(LoginRequiredMixin, UpdateView):
               'second_proofing', 'baking_time', 'baking_temperature', 'rating', 'notes']
     template_name = 'bread/edit_bread.html'
     success_url = reverse_lazy('show_breads')
+
+    def dispatch(self, request, *args, **kwargs):
+        enable_edit = super(EditBreadView, self).dispatch(request, *args, **kwargs)
+        bread = self.get_object()
+        creator = bread.user
+        editor = self.request.user
+        if creator != editor:
+            return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
+        return enable_edit
 
 
 """

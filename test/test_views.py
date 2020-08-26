@@ -133,8 +133,6 @@ def test_bread_view(client, user, leaven):
     assert len(breads) == 3
 
 
-
-
 @pytest.mark.django_db
 def test_flour_in_bread_view(client, user, leaven, flours):
     client.login(username='Kowalski', password='dziendobry')
