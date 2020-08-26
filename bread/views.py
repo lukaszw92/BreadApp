@@ -1,18 +1,16 @@
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.core.exceptions import ValidationError
-from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
-from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm, FlourInBreadForm
+from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm
 
 """Bread related views"""
 
 """ShowBreadsView displays all breads created by the user who is currently logged in"""
+
 
 
 class ShowBreadsView(View):
@@ -120,13 +118,10 @@ class RemoveFlourBreadView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('show_breads')
 
     def dispatch(self, request, *args, **kwargs):
-        enable_delete = super(RemoveFlourBreadView, self).dispatch(request, *args, **kwargs)
         flour_in_bread = self.get_object()
-        creator = flour_in_bread.bread.user
-        deleter = self.request.user
-        if creator != deleter:
+        if flour_in_bread.bread.user != self.request.user:
             return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
-        return enable_delete
+        return super().dispatch(request, *args, **kwargs)
 
 
 """EditFlourBreadView edits given flower in given bread"""
@@ -139,11 +134,9 @@ class EditFlourBreadView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('show_breads')
 
     def dispatch(self, request, *args, **kwargs):
-        enable_delete = super(EditFlourBreadView, self).dispatch(request, *args, **kwargs)
+        enable_delete = super().dispatch(request, *args, **kwargs)
         flour_in_bread = self.get_object()
-        creator = flour_in_bread.bread.user
-        editor = self.request.user
-        if creator != editor:
+        if flour_in_bread.bread.user != self.request.user:
             return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
         return enable_delete
 
@@ -162,7 +155,7 @@ class RemoveBreadView(LoginRequiredMixin, DeleteView):
         bread = self.get_object()
         if bread.user != self.request.user:
             return redirect(reverse('error', args=["You cannot delete someone else's bread."]))
-        return super(RemoveBreadView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
 
 """EditBreadView edits given bread. Flours from given bread can be edited in a separate view."""
@@ -176,11 +169,9 @@ class EditBreadView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('show_breads')
 
     def dispatch(self, request, *args, **kwargs):
-        enable_edit = super(EditBreadView, self).dispatch(request, *args, **kwargs)
+        enable_edit = super().dispatch(request, *args, **kwargs)
         bread = self.get_object()
-        creator = bread.user
-        editor = self.request.user
-        if creator != editor:
+        if bread.user != self.request.user:
             return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
         return enable_edit
 
@@ -276,8 +267,8 @@ class RemoveLeavenView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         leaven = self.get_object()
         if leaven.user != self.request.user:
-            return redirect(reverse('error', args=["You cannot delete someone else's leaven."]))
-        return super(RemoveLeavenView, self).dispatch(request, *args, **kwargs)
+            return redirect(reverse('error_leaven', args=["You cannot delete someone else's leaven."]))
+        return super().dispatch(request, *args, **kwargs)
 
 
 """
@@ -292,13 +283,10 @@ class EditLeavenView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('show_leavens')
 
     def dispatch(self, request, *args, **kwargs):
-        enable_delete = super(EditLeavenView, self).dispatch(request, *args, **kwargs)
         leaven = self.get_object()
-        creator = leaven.user
-        editor = self.request.user
-        if creator != editor:
-            return redirect(reverse('error', args=["You cannot edit someone else's leaven."]))
-        return enable_delete
+        if leaven.user != self.request.user:
+            return redirect(reverse('error_leaven', args=["You cannot edit someone else's leaven."]))
+        return super().dispatch(request, *args, **kwargs)
 
 
 """
@@ -312,13 +300,10 @@ class RemoveFlourLeavenView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('show_leavens')
 
     def dispatch(self, request, *args, **kwargs):
-        enable_delete = super(RemoveFlourLeavenView, self).dispatch(request, *args, **kwargs)
         flour_in_leaven = self.get_object()
-        creator = flour_in_leaven.leaven.user
-        deleter = self.request.user
-        if creator != deleter:
-            return redirect(reverse('error', args=["You cannot edit someone else's leaven."]))
-        return enable_delete
+        if flour_in_leaven.leaven.user != self.request.user:
+            return redirect(reverse('error_leaven', args=["You cannot edit someone else's leaven."]))
+        return super().dispatch(request, *args, **kwargs)
 
 
 
