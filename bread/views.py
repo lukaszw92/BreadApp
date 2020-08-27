@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
@@ -10,7 +11,6 @@ from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm
 """Bread related views"""
 
 """ShowBreadsView displays all breads created by the user who is currently logged in"""
-
 
 
 class ShowBreadsView(View):
@@ -132,6 +132,20 @@ class EditFlourBreadView(LoginRequiredMixin, UpdateView):
     fields = ['flour', 'grams']
     template_name = 'bread/edit_flour_bread.html'
     success_url = reverse_lazy('show_breads')
+
+    """Making sure that one will not edit a flour in 
+    bread so that it is the same flour that's already there in the bread"""
+
+    # def form_valid(self, form):
+    #     already_there = []
+    #     for flour_in_bread in self.object.bread.get_flour_list():
+    #         already_there.append(flour_in_bread.flour.id)
+    #
+    #     if self.object.flour.id in already_there:
+    #         return redirect(reverse('error', args=["This flour is already there in the bread."]))
+    #
+    #     self.object = form.save()
+    #     return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
         enable_delete = super().dispatch(request, *args, **kwargs)
@@ -304,7 +318,6 @@ class RemoveFlourLeavenView(LoginRequiredMixin, DeleteView):
         if flour_in_leaven.leaven.user != self.request.user:
             return redirect(reverse('error_leaven', args=["You cannot edit someone else's leaven."]))
         return super().dispatch(request, *args, **kwargs)
-
 
 
 """Flour related views"""
