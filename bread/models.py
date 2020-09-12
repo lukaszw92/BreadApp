@@ -210,6 +210,15 @@ FlourInBread model connects breads with flours that breads contain.
 It also stores information about the amounts of each type of flour in given bread.
 """
 
+# def double_flour_validator(self):
+#     already_there = []
+#     Bread.get_flour_list()
+#     for flour_in_bread in Bread.
+#         already_there.append(flour_in_bread.flour.id)
+#
+#     if self.bread.flour.id in already_there:
+#         raise ValidationError("There cannot be two same flours in one bread")
+
 
 class FlourInBread(models.Model):
     flour = models.ForeignKey(Flour, on_delete=models.CASCADE)

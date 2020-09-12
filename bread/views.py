@@ -136,16 +136,16 @@ class EditFlourBreadView(LoginRequiredMixin, UpdateView):
     """Making sure that one will not edit a flour in 
     bread so that it is the same flour that's already there in the bread"""
 
-    # def form_valid(self, form):
-    #     already_there = []
-    #     for flour_in_bread in self.object.bread.get_flour_list():
-    #         already_there.append(flour_in_bread.flour.id)
-    #
-    #     if self.object.flour.id in already_there:
-    #         return redirect(reverse('error', args=["This flour is already there in the bread."]))
-    #
-    #     self.object = form.save()
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        already_there = []
+        for flour_in_bread in self.object.bread.get_flour_list():
+            already_there.append(flour_in_bread.flour.id)
+
+        if self.object.flour.id in already_there:
+            return redirect(reverse('error', args=["This flour is already there in the bread."]))
+
+        self.object = form.save()
+        return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
         enable_delete = super().dispatch(request, *args, **kwargs)
@@ -387,3 +387,4 @@ class RemoveGrainView(PermissionRequiredMixin, DeleteView):
     model = Grain
     template_name = 'grain/remove_grain.html'
     success_url = reverse_lazy('add_grain')
+
