@@ -15,7 +15,7 @@
 
         <tr> <td> {{ flour.name }} </td> <td>  {{ flour.brand }} </td> <td>  {{ flour.grain }} </td>
 
-            <td> {{ flour.wholegrain }}</td> <td> {{ flour.type }} </td>
+            <td> {% if flour.wholegrain %} Yes {% else %} No {% endif %}</td> <td> {{ flour.type }} </td>
 
             <td> <a class="remove" href="{{ flour.get_delete_url}}">remove</a></td>
 
