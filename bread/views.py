@@ -83,6 +83,8 @@ class FlourInBreadView(LoginRequiredMixin, View):
 
             if int(weight) <= 0:
                 return redirect(reverse('error', args=["Value has to be positive"]))
+                ##return render(request, 'bread/flour_in_bread2.html', {"error": "Value has to be positive"})
+
 
             elif flour in added_flours:
                 return redirect(reverse('error', args=["You cannot add the same flour more than once."]))

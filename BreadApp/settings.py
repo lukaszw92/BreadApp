@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
+import django_heroku
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'i92*!1muvxmrfi!7rhug3o5mlaeg6sny1_sl*nb@za+$-mcba&'
+SECRET_KEY = os.getenv('SECRET_KEY', 'value')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['bakebread.herokuapp.com','127.0.0.1']
 
 
 # Application definition
@@ -82,7 +84,7 @@ DATABASES = {
         'NAME': 'bread2',
         'HOST': 'localhost',
         'USER': 'postgres',
-        'PASSWORD': 'coderslab',
+        'PASSWORD': os.environ.get('db_pass')
 
     }
 }
@@ -128,3 +130,5 @@ LOGOUT_REDIRECT_URL = '/'
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+django_heroku.settings(locals())
