@@ -1,5 +1,9 @@
 {% extends 'index.html' %}
 {% block content %}
-{{ error_message }}
+
+
+    {{error}}<br>
+
+
 <a href="{% url 'show_breads' %}">Back to bread list.</a>
 {% endblock %}

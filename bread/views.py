@@ -1,3 +1,4 @@
+
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, reverse
@@ -7,6 +8,12 @@ from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
 from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm
+
+
+# def handle_error(response, message):
+#     response = redirect(reverse('error'))
+#     response.set_cookie("error_message", message, max_age=10)
+#     return response
 
 """Bread related views"""
 
@@ -65,7 +72,9 @@ class FlourInBreadView(LoginRequiredMixin, View):
         bread = Bread.objects.get(pk=pk)
 
         if bread.user != request.user:
-            return redirect(reverse('error', args=["You cannot add flour to someone else's bread."]))
+            response = redirect(reverse('error'))
+            response.set_cookie("error_message", "You cannot add flour to someone else's bread.", max_age=10)
+            return response
 
         return render(request, "bread/flour_in_bread2.html", context)
 
@@ -82,31 +91,24 @@ class FlourInBreadView(LoginRequiredMixin, View):
         for flour, weight in zip(flours, grams):
 
             if int(weight) <= 0:
-                return redirect(reverse('error', args=["Value has to be positive"]))
-                ##return render(request, 'bread/flour_in_bread2.html', {"error": "Value has to be positive"})
-
+                response = redirect(reverse('error'))
+                response.set_cookie("error_message", "Value has to be positive.", max_age=10)
+                return response
 
             elif flour in added_flours:
-                return redirect(reverse('error', args=["You cannot add the same flour more than once."]))
+                response = redirect(reverse('error'))
+                response.set_cookie("error_message", "You cannot add the same flour more than once.", max_age=10)
+                return response
 
             elif flour in already_there:
-                return redirect(reverse('error', args=["This flour is already there in the bread."]))
+                response = redirect(reverse('error'))
+                response.set_cookie("error_message", "This flour is already there in the bread.", max_age=10)
+                return response
 
             FlourInBread.objects.create(bread=bread, flour_id=flour, grams=weight)
             added_flours.append(flour)
 
         return redirect(reverse("show_breads"))
-
-
-"""shows error message passed to the function argument for bread and leaven views"""
-
-
-def error(request, error_message):
-    return render(request, 'bread/error.html', context={'error_message': error_message})
-
-
-def error_leaven(request, error_message):
-    return render(request, 'leaven/error.html', context={'error_message': error_message})
 
 
 """
@@ -122,7 +124,11 @@ class RemoveFlourBreadView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         flour_in_bread = self.get_object()
         if flour_in_bread.bread.user != self.request.user:
-            return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
+
+            response = redirect(reverse('error'))
+            response.set_cookie("error_message", "You cannot edit someone else's bread.", max_age=10)
+            return response
+
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -144,7 +150,10 @@ class EditFlourBreadView(LoginRequiredMixin, UpdateView):
             already_there.append(flour_in_bread.flour.id)
 
         if self.object.flour.id in already_there:
-            return redirect(reverse('error', args=["This flour is already there in the bread."]))
+
+            response = redirect(reverse('error'))
+            response.set_cookie("error_message", "This flour is already there in the bread.", max_age=10)
+            return response
 
         self.object = form.save()
         return super().form_valid(form)
@@ -153,7 +162,11 @@ class EditFlourBreadView(LoginRequiredMixin, UpdateView):
         enable_delete = super().dispatch(request, *args, **kwargs)
         flour_in_bread = self.get_object()
         if flour_in_bread.bread.user != self.request.user:
-            return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
+
+            response = redirect(reverse('error'))
+            response.set_cookie("error_message", "You cannot edit someone else's bread.", max_age=10)
+            return response
+
         return enable_delete
 
 
@@ -170,7 +183,11 @@ class RemoveBreadView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         bread = self.get_object()
         if bread.user != self.request.user:
-            return redirect(reverse('error', args=["You cannot delete someone else's bread."]))
+
+            response = redirect(reverse('error'))
+            response.set_cookie("error_message", "You cannot delete someone else's bread.", max_age=10)
+            return response
+
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -188,7 +205,11 @@ class EditBreadView(LoginRequiredMixin, UpdateView):
         enable_edit = super().dispatch(request, *args, **kwargs)
         bread = self.get_object()
         if bread.user != self.request.user:
-            return redirect(reverse('error', args=["You cannot edit someone else's bread."]))
+
+            response = redirect(reverse('error'))
+            response.set_cookie("error_message", "You cannot edit someone else's bread.", max_age=10)
+            return response
+
         return enable_edit
 
 
@@ -230,7 +251,10 @@ class FlourInLeavenView(LoginRequiredMixin, View):
         leaven = Leaven.objects.get(pk=pk)
 
         if leaven.user != request.user:
-            return redirect(reverse('error', args=["You cannot add flour to someone else's leaven."]))
+
+            response = redirect(reverse('error_leaven'))
+            response.set_cookie("error_message", "You cannot add flour to someone else's leaven.", max_age=10)
+            return response
 
         return render(request, "leaven/flour_in_leaven.html", {'form': form})
 
@@ -238,8 +262,18 @@ class FlourInLeavenView(LoginRequiredMixin, View):
         leaven = Leaven.objects.get(pk=pk)
         form = FlourInLeavenForm(request.POST)
 
+        already_there = []
+        for flour_in_leaven in leaven.get_flour_list():
+            already_there.append(flour_in_leaven.flour.id)
+
         if form.is_valid():
             new_flour = form.save(commit=False)
+
+            if new_flour.flour.id in already_there:
+                response = redirect(reverse('error_leaven'))
+                response.set_cookie("error_message", "This flour is already there in the bread.", max_age=10)
+                return response
+
             new_flour.leaven = leaven
             new_flour.save()
             return redirect(reverse("show_leavens"))
@@ -283,7 +317,11 @@ class RemoveLeavenView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         leaven = self.get_object()
         if leaven.user != self.request.user:
-            return redirect(reverse('error_leaven', args=["You cannot delete someone else's leaven."]))
+
+            response = redirect(reverse('error_leaven'))
+            response.set_cookie("error_message", "You cannot delete someone else's leaven.", max_age=10)
+            return response
+
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -301,7 +339,11 @@ class EditLeavenView(LoginRequiredMixin, UpdateView):
     def dispatch(self, request, *args, **kwargs):
         leaven = self.get_object()
         if leaven.user != self.request.user:
-            return redirect(reverse('error_leaven', args=["You cannot edit someone else's leaven."]))
+
+            response = redirect(reverse('error_leaven'))
+            response.set_cookie("error_message", "You cannot edit someone else's leaven.", max_age=10)
+            return response
+
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -318,8 +360,25 @@ class RemoveFlourLeavenView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         flour_in_leaven = self.get_object()
         if flour_in_leaven.leaven.user != self.request.user:
-            return redirect(reverse('error_leaven', args=["You cannot edit someone else's leaven."]))
+
+            response = redirect(reverse('error_leaven'))
+            response.set_cookie("error_message", "You cannot edit someone else's leaven.", max_age=10)
+            return response
+
         return super().dispatch(request, *args, **kwargs)
+
+
+"""shows error message passed to the function argument for bread and leaven views"""
+
+
+def error(request):
+    error = request.COOKIES.get('error_message')
+    return render(request, 'bread/error.html', context={'error': error})
+
+
+def error_leaven(request):
+    error = request.COOKIES.get('error_message')
+    return render(request, 'leaven/error.html', context={'error': error})
 
 
 """Flour related views"""

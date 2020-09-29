@@ -16,11 +16,11 @@ urlpatterns = [
     path("leaven/show_leavens/", views.ShowLeavensView.as_view(), name='show_leavens'),
     path("leaven/show_all_leavens/", views.ShowAllLeavensView.as_view(), name='show_all_leavens'),
     path("leaven/edit_leaven/<int:pk>", views.EditLeavenView.as_view(), name='edit_leaven'),
-    path("leaven/error/<str:error_message>", views.error_leaven, name='error_leaven'),
+    path("leaven/error/", views.error_leaven, name='error_leaven'),
 
     path("bread/add_bread/", views.AddBreadView.as_view(), name='add_bread'),
     path("bread/flour_in_bread/<int:pk>", views.FlourInBreadView.as_view(), name='flour_in_bread'),
-    path("bread/error/<str:error_message>", views.error, name='error'),
+    path("bread/error/", views.error, name='error'),
     path("bread/remove_bread/<int:pk>", views.RemoveBreadView.as_view(), name='remove_bread'),
     path("bread/remove_flour_bread/<int:pk>", views.RemoveFlourBreadView.as_view(), name='remove_flour_bread'),
     path("bread/edit_flour_bread/<int:pk>", views.EditFlourBreadView.as_view(), name='edit_flour_bread'),
