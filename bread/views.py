@@ -1,6 +1,5 @@
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
@@ -9,11 +8,6 @@ from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
 from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm
 
-
-# def handle_error(response, message):
-#     response = redirect(reverse('error'))
-#     response.set_cookie("error_message", message, max_age=10)
-#     return response
 
 """Bread related views"""
 
