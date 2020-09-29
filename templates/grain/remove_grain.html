@@ -7,8 +7,9 @@
     <p>Are you sure you want to remove this grain - {{ object }} ?</p>
     <p>Removed grain will disappear from any flour that contained this grain.</p>
     <input class="submit" type="submit" value="Remove">
+<a class="back" href="{% url 'add_grain' %}">No, back to grain list!</a>
 </form>
-<a href="{% url 'add_grain' %}">No, back to grain list!</a>
+
 
 {% endblock content %}
 

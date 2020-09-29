@@ -9,7 +9,9 @@
         <p>{{ object.name }} | {{ object.brand }}</p>
     <p>By doing so you will also delete all breads that contain this flour.</p>
     <input class="submit" type="submit" value="Remove">
+
+<a class="back" href="{% url 'add_flour' %}">No, back to flour list!</a>
+
 </form>
-<a href="{% url 'add_flour' %}">No, back to flour list!</a>
 
 {% endblock content %}

@@ -29,6 +29,7 @@ textarea {
     float: right;
     cursor: pointer;
     transition: 0.5s;
+    margin: 10px
 }
 
 .next{

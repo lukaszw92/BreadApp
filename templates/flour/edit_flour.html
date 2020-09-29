@@ -7,8 +7,10 @@
 <form action="" method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <input class="submit" type="submit" value="Save changes"></form>
+  <input class="submit" type="submit" value="Save changes">
 
-<a href="{% url 'add_flour' %}">Don't save changes</a>
+<a class="back" href="{% url 'add_flour' %}">Don't save changes</a>
+
+</form>
 
 {% endblock content %}

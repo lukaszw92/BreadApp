@@ -65,6 +65,23 @@ body {
     text-decoration: none;
 }
 
+.back {
+    background: red;
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 10px 40px;
+    border:0;
+
+    cursor: pointer;
+    transition: 0.5s;
+    text-decoration: none;
+    text-align: center;
+    margin: 10px;
+}
+
+
+
+
 .edit {
     background: blue;
     color: #ffffff;

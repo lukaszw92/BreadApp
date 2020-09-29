@@ -348,7 +348,7 @@ RemoveFlourLeavenView removes flour from given leaven from database.
 
 class RemoveFlourLeavenView(LoginRequiredMixin, DeleteView):
     model = FlourInLeaven
-    template_name = 'bread/remove_flour_bread.html'
+    template_name = 'leaven/remove_flour_leaven.html'
     success_url = reverse_lazy('show_leavens')
 
     def dispatch(self, request, *args, **kwargs):
