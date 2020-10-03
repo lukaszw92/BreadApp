@@ -1,4 +1,8 @@
 # BreadApp
+
+Demo at
+https://bakebread.herokuapp.com/
+
 An application to manage your home bread baking
 
 This app helps to compare results of home bread baking
