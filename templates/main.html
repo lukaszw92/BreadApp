@@ -30,8 +30,13 @@
 
     <div class="statistic">{{ all_breads }} breads baked with BreadApp</div>
     {% if user.is_authenticated %}
-    <div class="statistic">{{ user_breads }} of which were made by You </div>
+    {% if user_breads == 1 %}
+    <div class="statistic">{{ user_breads }} of which is made by You </div>
+        {% else %}
+        <div class="statistic">{{ user_breads }} of which were made by You </div>
     {% endif %}
+    {% endif %}
+
         <div class="statistic">{{ users }} bread nerds on board</div>
 
 {% endblock %}
