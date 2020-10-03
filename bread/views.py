@@ -7,12 +7,25 @@ from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from bread.models import Grain, Flour, Leaven, FlourInLeaven, Bread, FlourInBread
 from bread.forms import LeavenForm, FlourInLeavenForm, BreadForm
+from accounts.models import total_users
+
+
+class MainPageView(View):
+
+    def get(self, request):
+        all_breads = Bread.get_all_breads_quantity()
+        if request.user.is_anonymous:
+            user_breads = "None"
+        else:
+            user_breads = Bread.get_user_bread_quantity(request)
+        users = total_users()
+        context = {'all_breads': all_breads, 'user_breads': user_breads, 'users': users}
+        return render(request, 'main.html', context)
 
 
 """Bread related views"""
 
 """ShowBreadsView displays all breads created by the user who is currently logged in"""
-
 
 class ShowBreadsView(View):
     def get(self, request):

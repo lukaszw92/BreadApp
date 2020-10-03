@@ -1,0 +1,38 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<div class="main_text">
+    What is BreadApp?<br>
+    BreadApp helps you with your home bread baking
+    by storing data about your breads and enabling you to compare the results of your baking.<br>
+    You can compare factors such as:<br>
+    <ul>
+        <li>types and amounts of flours</li>
+        <li>amount of water</li>
+        <li>baking and proofing time</li>
+        <li>baking temperature</li>
+    </ul>
+    In addition it automatically calculates
+    <ul>
+        <li>bread hydration</li>
+        <li>total mass of the bread</li>
+    </ul>
+    How does it work?<br>
+    To add your bread to the database click the "Create your bread" button and follow the form.
+    To create your bread first however you have to have your leaven. You can do it in "Create your leaven" section.
+    You may use leaven recipe created by other users.
+    Upon creating bread and leaven you will be asked to select used flours. If the flour you used is not in our database
+    you can add it by in "View and add flours" section.
+    Finally if you use some fancy flour made of some unusual grains
+    you may also add that type of grain to the database in "View and add grains" section.
+
+</div>
+
+    <div class="statistic">{{ all_breads }} breads baked with BreadApp</div>
+    {% if user.is_authenticated %}
+    <div class="statistic">{{ user_breads }} of which were made by You </div>
+    {% endif %}
+        <div class="statistic">{{ users }} bread nerds on board</div>
+
+{% endblock %}
+

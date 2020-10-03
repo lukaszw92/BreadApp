@@ -46,6 +46,21 @@ class Bread(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
+    @staticmethod
+    def get_all_breads_quantity():
+        total = 0
+        for bread in Bread.objects.all():
+            total += 1
+        return total
+
+    @staticmethod
+    def get_user_bread_quantity(request):
+        total = 0
+        for bread in Bread.objects.filter(user=request.user):
+            total += 1
+        return total
+
+
     """
     get_total_flour_weight function sums weight of all flours added to the bread upon final mixing (just before baking)
     It does not take into account flour that got to the bread in leaven.

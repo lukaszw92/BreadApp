@@ -23,8 +23,31 @@ body {
     margin: 0;
 }
 
+.statistic {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:0 10px;
+    background: rgba(165, 124, 42, 0.42);
+    font-size: 30px;
 
-.logo {}
+}
+
+.main_text {
+    font-size: 20px;
+    alignment: center;
+    text-align: justify-all;
+    background: rgba(120, 75, 51, 0.9);
+    display: inline-flex;
+    flex-direction: column;
+    padding: 40px;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
+
+}
+
+
+.logo {
+}
 
 .menu {
 
@@ -78,8 +101,6 @@ body {
     text-align: center;
     margin: 10px;
 }
-
-
 
 
 .edit {

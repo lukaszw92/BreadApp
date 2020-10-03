@@ -17,9 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
+from bread.views import MainPageView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='index.html'), name='main'),
+    path('', MainPageView.as_view(), name='main'),
     path("baking/", include('bread.urls')),
     path("accounts/", include('accounts.urls')),
 ]
